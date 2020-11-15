@@ -1,0 +1,38 @@
+
+*****************************************************
+Summary
+-------
+Generated at: 2020-11-15T12:41:51+02:00
+
+Notes: 0
+Binaries: 0
+Archives: 0
+Standards: 12
+
+Apache Licensed: 12
+Generated Documents: 0
+
+JavaDocs are generated, thus a license header is optional.
+Generated files do not require license headers.
+
+0 Unknown Licenses
+
+*****************************************************
+  Files with Apache License headers will be marked AL
+  Binary files (which do not require any license headers) will be marked B
+  Compressed archives will be marked A
+  Notices, licenses etc. will be marked N
+  AL    pom.xml
+  AL    src/test/resources/logging.properties
+  AL    src/main/java/org/jclouds/h3/util/internal/Utils.java
+  AL    src/main/java/org/jclouds/h3/util/internal/H3BlobUtilsImpl.java
+  AL    src/main/java/org/jclouds/h3/H3.java
+  AL    src/main/java/org/jclouds/h3/strategy/internal/H3StorageStrategyImpl.java
+  AL    src/main/java/org/jclouds/h3/H3ApiMetadata.java
+  AL    src/main/java/org/jclouds/h3/config/H3ContextModule.java
+  AL    src/main/java/org/jclouds/h3/predicates/validators/H3BlobKeyValidator.java
+  AL    src/main/java/org/jclouds/h3/predicates/validators/H3ContainerNameValidator.java
+  AL    src/main/java/org/jclouds/h3/predicates/validators/internal/H3BlobKeyValidatorImpl.java
+  AL    src/main/java/org/jclouds/h3/predicates/validators/internal/H3ContainerNameValidatorImpl.java
+ 
+*****************************************************

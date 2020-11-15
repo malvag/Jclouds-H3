@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<duplicate-finder-result version="1">
+    <project artifactId="h3" groupId="org.apache.jclouds.api" version="2.2.1" type="bundle"/>
+    <configuration skip="false" quiet="false" checkCompileClasspath="true" checkRuntimeClasspath="true" checkTestClasspath="true" failBuildInCaseOfDifferentContentConflict="false" failBuildInCaseOfEqualContentConflict="false" failBuildInCaseOfConflict="true" printEqualFiles="false" preferLocal="true" includeBootClasspath="false" bootClasspathProperty="sun.boot.class.path" useDefaultResourceIgnoreList="true" useResultFile="true" resultFileMinClasspathCount="2" resultFile="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/target/duplicate-finder-result.xml">
+        <ignoredResourcePatterns>
+            <ignoredResourcePattern>about\.html</ignoredResourcePattern>
+            <ignoredResourcePattern>log4j.xml</ignoredResourcePattern>
+            <ignoredResourcePattern>os.xml</ignoredResourcePattern>
+            <ignoredResourcePattern>virtualhardwaresection.xml</ignoredResourcePattern>
+            <ignoredResourcePattern>logback.xml</ignoredResourcePattern>
+            <ignoredResourcePattern>amzn_images.xml</ignoredResourcePattern>
+            <ignoredResourcePattern>test.jks</ignoredResourcePattern>
+            <ignoredResourcePattern>test</ignoredResourcePattern>
+            <ignoredResourcePattern>CreateInternetService-options-test.xml</ignoredResourcePattern>
+            <ignoredResourcePattern>.gitattributes</ignoredResourcePattern>
+            <ignoredResourcePattern>functions/.gitattributes</ignoredResourcePattern>
+            <ignoredResourcePattern>OSGI-OPT/bnd.bnd</ignoredResourcePattern>
+            <ignoredResourcePattern>META-INF/BCKEY.DSA</ignoredResourcePattern>
+            <ignoredResourcePattern>META-INF/BCKEY.SF</ignoredResourcePattern>
+        </ignoredResourcePatterns>
+        <conflictingDependencies>
+            <conflictingDependency currentProject="false" currentProjectIncluded="false" wildcard="false" bootClasspath="false">
+                <dependencies>
+                    <dependency artifactId="cloudsigma" groupId="org.apache.jclouds.api" version="2.2.1" versionRange="2.2.1" type="jar"/>
+                    <dependency artifactId="cloudsigma-lvs" groupId="org.apache.jclouds.provider" version="2.2.1" versionRange="2.2.1" type="jar"/>
+                    <dependency artifactId="cloudsigma-zrh" groupId="org.apache.jclouds.provider" version="2.2.1" versionRange="2.2.1" type="jar"/>
+                </dependencies>
+                <packages>
+                    <package>org.jclouds.cloudsigma</package>
+                </packages>
+                <classes/>
+                <resources/>
+                <resourcePatterns/>
+            </conflictingDependency>
+            <conflictingDependency currentProject="false" currentProjectIncluded="false" wildcard="false" bootClasspath="false">
+                <dependencies>
+                    <dependency artifactId="appengine-api-1.0-sdk" groupId="com.google.appengine" version="1.6.5" versionRange="1.6.5" type="jar"/>
+                    <dependency artifactId="appengine-testing" groupId="com.google.appengine" version="1.6.5" versionRange="1.6.5" type="jar"/>
+                </dependencies>
+                <packages>
+                    <package>com.google</package>
+                </packages>
+                <classes/>
+                <resources/>
+                <resourcePatterns/>
+            </conflictingDependency>
+            <conflictingDependency currentProject="false" currentProjectIncluded="false" wildcard="false" bootClasspath="false">
+                <dependencies>
+                    <dependency artifactId="jsch.agentproxy.core" groupId="com.jcraft" version="0.0.9" versionRange="0.0.9" type="jar"/>
+                    <dependency artifactId="jsch.agentproxy.connector-factory" groupId="com.jcraft" version="0.0.9" versionRange="0.0.9" type="jar"/>
+                </dependencies>
+                <packages>
+                    <package>com.jcraft.jsch.agentproxy</package>
+                </packages>
+                <classes/>
+                <resources/>
+                <resourcePatterns/>
+            </conflictingDependency>
+            <conflictingDependency currentProject="false" currentProjectIncluded="false" wildcard="false" bootClasspath="false">
+                <dependencies>
+                    <dependency artifactId="jclouds-core" groupId="org.apache.jclouds" type="jar"/>
+                    <dependency artifactId="jclouds-gson" groupId="org.apache.jclouds" type="jar"/>
+                </dependencies>
+                <packages>
+                    <package>org.jclouds.json.gson.internal</package>
+                </packages>
+                <classes/>
+                <resources/>
+                <resourcePatterns/>
+            </conflictingDependency>
+        </conflictingDependencies>
+        <ignoredDependencies/>
+    </configuration>
+    <results>
+        <result name="compile" conflictState="no-conflict" failed="false">
+            <conflicts/>
+            <ignoredResourcePatterns>
+                <ignoredResourcePattern>^META-INF/.*</ignoredResourcePattern>
+                <ignoredResourcePattern>^OSGI-INF/.*</ignoredResourcePattern>
+                <ignoredResourcePattern>^licenses/.*</ignoredResourcePattern>
+                <ignoredResourcePattern>.*license(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*notice(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*readme(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*third-party(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*package\.html$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*overview\.html$</ignoredResourcePattern>
+                <ignoredResourcePattern>about\.html</ignoredResourcePattern>
+                <ignoredResourcePattern>log4j.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>os.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>virtualhardwaresection.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>logback.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>amzn_images.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>test.jks</ignoredResourcePattern>
+                <ignoredResourcePattern>test</ignoredResourcePattern>
+                <ignoredResourcePattern>CreateInternetService-options-test.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>.gitattributes</ignoredResourcePattern>
+                <ignoredResourcePattern>functions/.gitattributes</ignoredResourcePattern>
+                <ignoredResourcePattern>OSGI-OPT/bnd.bnd</ignoredResourcePattern>
+                <ignoredResourcePattern>META-INF/BCKEY.DSA</ignoredResourcePattern>
+                <ignoredResourcePattern>META-INF/BCKEY.SF</ignoredResourcePattern>
+            </ignoredResourcePatterns>
+            <ignoredDirectoryPatterns>
+                <ignoredDirectoryPattern>^.git$</ignoredDirectoryPattern>
+                <ignoredDirectoryPattern>^.svn$</ignoredDirectoryPattern>
+                <ignoredDirectoryPattern>^.hg$</ignoredDirectoryPattern>
+                <ignoredDirectoryPattern>^.bzr$</ignoredDirectoryPattern>
+            </ignoredDirectoryPatterns>
+            <classpathElements type="classes"/>
+            <classpathElements type="resources"/>
+        </result>
+        <result name="runtime" conflictState="no-conflict" failed="false">
+            <conflicts/>
+            <ignoredResourcePatterns>
+                <ignoredResourcePattern>^META-INF/.*</ignoredResourcePattern>
+                <ignoredResourcePattern>^OSGI-INF/.*</ignoredResourcePattern>
+                <ignoredResourcePattern>^licenses/.*</ignoredResourcePattern>
+                <ignoredResourcePattern>.*license(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*notice(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*readme(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*third-party(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*package\.html$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*overview\.html$</ignoredResourcePattern>
+                <ignoredResourcePattern>about\.html</ignoredResourcePattern>
+                <ignoredResourcePattern>log4j.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>os.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>virtualhardwaresection.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>logback.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>amzn_images.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>test.jks</ignoredResourcePattern>
+                <ignoredResourcePattern>test</ignoredResourcePattern>
+                <ignoredResourcePattern>CreateInternetService-options-test.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>.gitattributes</ignoredResourcePattern>
+                <ignoredResourcePattern>functions/.gitattributes</ignoredResourcePattern>
+                <ignoredResourcePattern>OSGI-OPT/bnd.bnd</ignoredResourcePattern>
+                <ignoredResourcePattern>META-INF/BCKEY.DSA</ignoredResourcePattern>
+                <ignoredResourcePattern>META-INF/BCKEY.SF</ignoredResourcePattern>
+            </ignoredResourcePatterns>
+            <ignoredDirectoryPatterns>
+                <ignoredDirectoryPattern>^.git$</ignoredDirectoryPattern>
+                <ignoredDirectoryPattern>^.svn$</ignoredDirectoryPattern>
+                <ignoredDirectoryPattern>^.hg$</ignoredDirectoryPattern>
+                <ignoredDirectoryPattern>^.bzr$</ignoredDirectoryPattern>
+            </ignoredDirectoryPatterns>
+            <classpathElements type="classes"/>
+            <classpathElements type="resources"/>
+        </result>
+        <result name="test" conflictState="no-conflict" failed="false">
+            <conflicts/>
+            <ignoredResourcePatterns>
+                <ignoredResourcePattern>^META-INF/.*</ignoredResourcePattern>
+                <ignoredResourcePattern>^OSGI-INF/.*</ignoredResourcePattern>
+                <ignoredResourcePattern>^licenses/.*</ignoredResourcePattern>
+                <ignoredResourcePattern>.*license(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*notice(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*readme(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*third-party(\.txt)?$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*package\.html$</ignoredResourcePattern>
+                <ignoredResourcePattern>.*overview\.html$</ignoredResourcePattern>
+                <ignoredResourcePattern>about\.html</ignoredResourcePattern>
+                <ignoredResourcePattern>log4j.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>os.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>virtualhardwaresection.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>logback.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>amzn_images.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>test.jks</ignoredResourcePattern>
+                <ignoredResourcePattern>test</ignoredResourcePattern>
+                <ignoredResourcePattern>CreateInternetService-options-test.xml</ignoredResourcePattern>
+                <ignoredResourcePattern>.gitattributes</ignoredResourcePattern>
+                <ignoredResourcePattern>functions/.gitattributes</ignoredResourcePattern>
+                <ignoredResourcePattern>OSGI-OPT/bnd.bnd</ignoredResourcePattern>
+                <ignoredResourcePattern>META-INF/BCKEY.DSA</ignoredResourcePattern>
+                <ignoredResourcePattern>META-INF/BCKEY.SF</ignoredResourcePattern>
+            </ignoredResourcePatterns>
+            <ignoredDirectoryPatterns>
+                <ignoredDirectoryPattern>^.git$</ignoredDirectoryPattern>
+                <ignoredDirectoryPattern>^.svn$</ignoredDirectoryPattern>
+                <ignoredDirectoryPattern>^.hg$</ignoredDirectoryPattern>
+                <ignoredDirectoryPattern>^.bzr$</ignoredDirectoryPattern>
+            </ignoredDirectoryPatterns>
+            <classpathElements type="classes"/>
+            <classpathElements type="resources"/>
+        </result>
+    </results>
+</duplicate-finder-result>
