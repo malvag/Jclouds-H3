@@ -5,6 +5,7 @@ org/jclouds/h3/H3ApiMetadata.class
 org/jclouds/h3/config/H3ContextModule.class
 org/jclouds/h3/strategy/internal/H3StorageStrategyImpl.class
 org/jclouds/h3/predicates/validators/H3ContainerNameValidator.class
+org/jclouds/h3/reference/H3Constants.class
 org/jclouds/h3/predicates/validators/internal/H3ContainerNameValidatorImpl.class
 org/jclouds/h3/H3ApiMetadata$Builder.class
 org/jclouds/h3/predicates/validators/internal/H3BlobKeyValidatorImpl.class

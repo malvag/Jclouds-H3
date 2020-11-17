@@ -1,13 +1,15 @@
-#Sun Nov 15 12:41:52 EET 2020
+#Tue Nov 17 13:10:19 EET 2020
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/util/internal/Utils.java=1605284973000
-/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/strategy/internal/H3StorageStrategyImpl.java=1605436902000
+/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/reference/H3Constants.java=1605444155000
+/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/strategy/internal/H3StorageStrategyImpl.java=1605611413000
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/util/internal/H3BlobUtilsImpl.java=1605284916000
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/internal/H3ContainerNameValidatorImpl.java=1605284937000
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/H3BlobKeyValidator.java=1605284928000
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/H3ContainerNameValidator.java=1605284924000
-/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/H3ApiMetadata.java=1605282491000
+/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/H3ApiMetadata.java=1605445292000
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/H3.java=1605200533000
+/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/test/java/H3viaJcloudsTest.java=1605607034000
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/test/resources/logging.properties=1588387115000
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/internal/H3BlobKeyValidatorImpl.java=1605285005000
-/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/config/H3ContextModule.java=1605284828000
+/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/config/H3ContextModule.java=1605443547000
 configuration*?=77F89CA316E6DC2116319AE153B1165526EDD746

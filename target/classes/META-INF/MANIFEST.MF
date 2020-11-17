@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1605436911036
+Bnd-LastModified: 1605611417764
 Build-Jdk: 1.8.0_265
 Built-By: malvagos
 Bundle-Description: jclouds components to access h3
@@ -13,31 +13,35 @@ Bundle-Version: 2.2.1
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.jclouds.h3.util.internal;uses:="org.jclouds.blobstor
  e.options,org.jclouds.blobstore.util,org.jclouds.blobstore.domain";vers
- ion="2.2.1",org.jclouds.h3.predicates.validators.internal;uses:="com.go
- ogle.inject,org.jclouds.h3.predicates.validators";version="2.2.1",org.j
- clouds.h3.strategy.internal;uses:="org.jclouds.domain,org.jclouds.blobs
- tore.options,org.jclouds.blobstore,gr.forth.ics.JH3lib,org.jclouds.blob
- store.domain";version="2.2.1",org.jclouds.h3.predicates.validators;uses
- :="org.jclouds.predicates";version="2.2.1",org.jclouds.h3.config;uses:=
- "org.jclouds.h3.util.internal,org.jclouds.blobstore.config,com.google.i
- nject,org.jclouds.blobstore.attr,org.jclouds.h3.predicates.validators.i
- nternal,org.jclouds.blobstore,org.jclouds.h3.strategy.internal,com.goog
- le.inject.binder,org.jclouds.h3.predicates.validators,org.jclouds.blobs
- tore.util";version="2.2.1",org.jclouds.h3;uses:="org.jclouds.blobstore,
- org.jclouds.apis,org.jclouds.apis.internal,org.jclouds.h3.config,org.jc
- louds.rest.internal";version="2.2.1"
+ ion="2.2.1",org.jclouds.h3.reference;version="2.2.1",org.jclouds.h3.pre
+ dicates.validators.internal;uses:="com.google.inject,org.jclouds.h3.pre
+ dicates.validators";version="2.2.1",org.jclouds.h3.strategy.internal;us
+ es:="com.google.common.base,org.jclouds.h3.predicates.validators,org.jc
+ louds.logging,javax.annotation,org.jclouds.domain,org.jclouds.blobstore
+ .options,org.jclouds.blobstore,gr.forth.ics.JH3lib,org.jclouds.blobstor
+ e.domain,javax.inject";version="2.2.1",org.jclouds.h3.predicates.valida
+ tors;uses:="org.jclouds.predicates";version="2.2.1",org.jclouds.h3.conf
+ ig;uses:="org.jclouds.h3.util.internal,org.jclouds.blobstore.config,com
+ .google.inject,org.jclouds.blobstore.attr,org.jclouds.h3.predicates.val
+ idators.internal,org.jclouds.blobstore,org.jclouds.h3.strategy.internal
+ ,com.google.inject.binder,org.jclouds.h3.predicates.validators,org.jclo
+ uds.blobstore.util";version="2.2.1",org.jclouds.h3;uses:="org.jclouds.b
+ lobstore,org.jclouds.apis,org.jclouds.apis.internal,org.jclouds.h3.conf
+ ig,org.jclouds.rest.internal";version="2.2.1"
 Implementation-Title: jclouds h3 core
 Implementation-Vendor: jclouds
 Implementation-Vendor-Id: org.jclouds
 Implementation-Version: 2.2.1
-Import-Package: com.google.inject;version="[1.3,2)",com.google.inject.bi
- nder;version="[1.3,2)",gr.forth.ics.JH3lib,org.jclouds.apis;version="2.
- 2.1",org.jclouds.apis.internal;version="2.2.1",org.jclouds.blobstore;ve
- rsion="2.2.1",org.jclouds.blobstore.attr;version="2.2.1",org.jclouds.bl
- obstore.config;version="2.2.1",org.jclouds.blobstore.domain;version="2.
- 2.1",org.jclouds.blobstore.options;version="2.2.1",org.jclouds.blobstor
- e.util;version="2.2.1",org.jclouds.domain;version="2.2.1",org.jclouds.p
- redicates;version="2.2.1",org.jclouds.rest.internal;version="2.2.1"
+Import-Package: com.google.common.base;version="[18.0,24.0.0)",com.googl
+ e.inject;version="[1.3,2)",com.google.inject.binder;version="[1.3,2)",g
+ r.forth.ics.JH3lib,javax.annotation,javax.inject,org.jclouds.apis;versi
+ on="2.2.1",org.jclouds.apis.internal;version="2.2.1",org.jclouds.blobst
+ ore;version="2.2.1",org.jclouds.blobstore.attr;version="2.2.1",org.jclo
+ uds.blobstore.config;version="2.2.1",org.jclouds.blobstore.domain;versi
+ on="2.2.1",org.jclouds.blobstore.options;version="2.2.1",org.jclouds.bl
+ obstore.util;version="2.2.1",org.jclouds.domain;version="2.2.1",org.jcl
+ ouds.logging;version="2.2.1",org.jclouds.predicates;version="2.2.1",org
+ .jclouds.rest.internal;version="2.2.1"
 Specification-Title: jclouds jclouds h3 core
 Specification-Vendor: jclouds
 Specification-Version: 2.2.1

@@ -2,6 +2,7 @@
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/H3.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/util/internal/H3BlobUtilsImpl.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/H3ApiMetadata.java
+/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/reference/H3Constants.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/config/H3ContextModule.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/H3BlobKeyValidator.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/H3ContainerNameValidator.java

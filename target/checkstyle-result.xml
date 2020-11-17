@@ -10,6 +10,8 @@
 </file>
 <file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/H3ApiMetadata.java">
 </file>
+<file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/reference/H3Constants.java">
+</file>
 <file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/config/H3ContextModule.java">
 </file>
 <file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/H3BlobKeyValidator.java">
@@ -19,6 +21,8 @@
 <file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/internal/H3BlobKeyValidatorImpl.java">
 </file>
 <file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/internal/H3ContainerNameValidatorImpl.java">
+</file>
+<file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/test/java/H3viaJcloudsTest.java">
 </file>
 <file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/test/resources/logging.properties">
 </file>
