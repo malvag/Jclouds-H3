@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1605611417764
+Bnd-LastModified: 1605624150533
 Build-Jdk: 1.8.0_265
 Built-By: malvagos
 Bundle-Description: jclouds components to access h3
@@ -11,23 +11,25 @@ Bundle-SymbolicName: h3
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.2.1
 Created-By: Apache Maven Bundle Plugin
-Export-Package: org.jclouds.h3.util.internal;uses:="org.jclouds.blobstor
- e.options,org.jclouds.blobstore.util,org.jclouds.blobstore.domain";vers
- ion="2.2.1",org.jclouds.h3.reference;version="2.2.1",org.jclouds.h3.pre
- dicates.validators.internal;uses:="com.google.inject,org.jclouds.h3.pre
- dicates.validators";version="2.2.1",org.jclouds.h3.strategy.internal;us
- es:="com.google.common.base,org.jclouds.h3.predicates.validators,org.jc
- louds.logging,javax.annotation,org.jclouds.domain,org.jclouds.blobstore
- .options,org.jclouds.blobstore,gr.forth.ics.JH3lib,org.jclouds.blobstor
- e.domain,javax.inject";version="2.2.1",org.jclouds.h3.predicates.valida
- tors;uses:="org.jclouds.predicates";version="2.2.1",org.jclouds.h3.conf
- ig;uses:="org.jclouds.h3.util.internal,org.jclouds.blobstore.config,com
- .google.inject,org.jclouds.blobstore.attr,org.jclouds.h3.predicates.val
- idators.internal,org.jclouds.blobstore,org.jclouds.h3.strategy.internal
- ,com.google.inject.binder,org.jclouds.h3.predicates.validators,org.jclo
- uds.blobstore.util";version="2.2.1",org.jclouds.h3;uses:="org.jclouds.b
- lobstore,org.jclouds.apis,org.jclouds.apis.internal,org.jclouds.h3.conf
- ig,org.jclouds.rest.internal";version="2.2.1"
+Export-Package: org.jclouds.h3.util.internal;uses:="com.google.inject,or
+ g.jclouds.blobstore.options,com.google.common.base,org.jclouds.blobstor
+ e,org.jclouds.h3.strategy.internal,org.jclouds.blobstore.util,org.jclou
+ ds.blobstore.domain,javax.inject";version="2.2.1",org.jclouds.h3.refere
+ nce;version="2.2.1",org.jclouds.h3.predicates.validators.internal;uses:
+ ="com.google.inject,org.jclouds.h3.predicates.validators";version="2.2.
+ 1",org.jclouds.h3.strategy.internal;uses:="com.google.common.base,org.j
+ clouds.h3.predicates.validators,org.jclouds.logging,org.jclouds.h3.util
+ .internal,javax.annotation,org.jclouds.domain,org.jclouds.blobstore.opt
+ ions,org.jclouds.blobstore,gr.forth.ics.JH3lib,org.jclouds.blobstore.do
+ main,javax.inject";version="2.2.1",org.jclouds.h3.predicates.validators
+ ;uses:="org.jclouds.predicates";version="2.2.1",org.jclouds.h3.config;u
+ ses:="org.jclouds.h3.util.internal,org.jclouds.blobstore.config,com.goo
+ gle.inject,org.jclouds.blobstore.attr,org.jclouds.h3.predicates.validat
+ ors.internal,org.jclouds.blobstore,org.jclouds.h3.strategy.internal,com
+ .google.inject.binder,org.jclouds.h3.predicates.validators,org.jclouds.
+ blobstore.util";version="2.2.1",org.jclouds.h3;uses:="org.jclouds.blobs
+ tore,org.jclouds.apis,org.jclouds.apis.internal,org.jclouds.h3.config,o
+ rg.jclouds.rest.internal";version="2.2.1"
 Implementation-Title: jclouds h3 core
 Implementation-Vendor: jclouds
 Implementation-Vendor-Id: org.jclouds
