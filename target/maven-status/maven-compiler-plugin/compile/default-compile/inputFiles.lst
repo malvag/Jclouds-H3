@@ -1,3 +1,4 @@
+/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/util/Utils.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/internal/H3ContainerNameValidatorImpl.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/H3.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/util/internal/H3BlobUtilsImpl.java
@@ -7,5 +8,4 @@
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/H3BlobKeyValidator.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/H3ContainerNameValidator.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/strategy/internal/H3StorageStrategyImpl.java
-/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/util/internal/Utils.java
 /home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/internal/H3BlobKeyValidatorImpl.java

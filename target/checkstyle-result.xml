@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="6.18">
-<file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/util/internal/Utils.java">
+<file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/util/Utils.java">
 </file>
 <file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/util/internal/H3BlobUtilsImpl.java">
 </file>

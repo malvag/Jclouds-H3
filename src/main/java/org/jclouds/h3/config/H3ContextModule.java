@@ -34,7 +34,7 @@ import org.jclouds.h3.predicates.validators.internal.H3ContainerNameValidatorImp
 import org.jclouds.h3.strategy.internal.H3StorageStrategyImpl;
 import org.jclouds.h3.util.internal.H3BlobUtilsImpl;
 
-import static org.jclouds.h3.util.internal.Utils.isWindows;
+import static org.jclouds.h3.util.Utils.isWindows;
 //	import org.jclouds.blobstore.util.BlobUtils;
 //	import com.google.inject.AbstractModule;
 
