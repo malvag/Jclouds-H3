@@ -2,14 +2,14 @@
 *****************************************************
 Summary
 -------
-Generated at: 2020-11-18T16:27:29+02:00
+Generated at: 2020-11-19T18:42:02+02:00
 
 Notes: 0
 Binaries: 0
 Archives: 0
-Standards: 14
+Standards: 13
 
-Apache Licensed: 14
+Apache Licensed: 13
 Generated Documents: 0
 
 JavaDocs are generated, thus a license header is optional.
@@ -24,7 +24,6 @@ Generated files do not require license headers.
   Notices, licenses etc. will be marked N
   AL    pom.xml
   AL    src/test/resources/logging.properties
-  AL    src/test/java/H3viaJcloudsTest.java
   AL    src/main/java/org/jclouds/h3/util/Utils.java
   AL    src/main/java/org/jclouds/h3/util/internal/H3BlobUtilsImpl.java
   AL    src/main/java/org/jclouds/h3/H3.java

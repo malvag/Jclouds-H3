@@ -22,8 +22,6 @@
 </file>
 <file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/main/java/org/jclouds/h3/predicates/validators/internal/H3ContainerNameValidatorImpl.java">
 </file>
-<file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/test/java/H3viaJcloudsTest.java">
-</file>
 <file name="/home/malvagos/Desktop/projects/jclouds/jclouds-2.2.1/apis/h3/src/test/resources/logging.properties">
 </file>
 </checkstyle>

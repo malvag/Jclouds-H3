@@ -42,13 +42,10 @@ import javax.inject.Inject;
 
 import javax.inject.Named;
 import javax.inject.Provider;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -99,7 +96,8 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 
 	@Override
 	public boolean containerExists(String container) {
-		System.out.println("[Jclouds-H3] containerExists " + container);
+		if (debug)
+			System.out.println("[Jclouds-H3] containerExists " + container);
 		if (debug && container.equals("_all_")) {
 			getAllContainerNames();
 			return true;
@@ -232,33 +230,19 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 
 			JH3Object jh3Object = H3StorageStrategyImpl.H3client.readObject(containerName, blobName);
 			if (jh3Object != null) {
-				System.out.println("[Jclouds-H3] not yet implemented / dont know how to convert JH3Object to Blob");
-				System.out.println(deserialize(jh3Object.getData()));
-
-
-//				jh3Object.getData()
-//				return jh3Object;
+//				System.out.println("[Jclouds-H3] not yet implemented / dont know how to convert JH3Object to Blob");
+				return blobBuilders.get().name(blobName)
+						.payload(jh3Object.getData())
+						.contentLength(jh3Object.getSize())
+						.build();
 			}
 
 
 		} catch (JH3Exception e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}
 		System.err.println("[Jclouds-H3] Bucket or object doesn't exist!");
 		return null;
-	}
-
-	public static Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
-		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		ObjectInputStream is = new ObjectInputStream(in);
-		Object obj =  is.readObject();
-		in.close();
-		is.close();
-		return obj;
 	}
 
 	@Override
@@ -273,9 +257,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				System.err.println("containerName doesnt exist");
 				System.exit(1);
 			}
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream out = null;
-
 			data_bytes  = ByteStreams.toByteArray(payload.openStream());
 
 			JH3Object object = new JH3Object(data_bytes, data_bytes.length);
@@ -309,12 +290,18 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	@Override
 	public void removeBlob(String container, String key) {
 		System.out.println("[Jclouds-H3] removeBlob");
+		try {
+			if (!H3client.deleteObject(container, key)){
+				System.err.println("[Jclouds-H3] Error deleting Object! " + H3StorageStrategyImpl.H3client.getStatus());
+			}
+		} catch (JH3Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public BlobAccess getBlobAccess(String container, String key) {
 		System.out.println("[Jclouds-H3] getBlobAccess");
-
 		return null;
 	}
 
