@@ -86,10 +86,11 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				"h3 container name validator");
 		this.H3BlobKeyValidator = checkNotNull(h3BlobKeyValidator, "h3 blob key validator");
 		this.defaultLocation = defaultLocation;
-		System.out.println("[Jclouds-H3] new H3StorageStrategyImpl");
+		System.out.println("[Jclouds-H3] new H3StorageStrategyImpl with " + baseDir);
 		try {
 			H3StorageStrategyImpl.H3client = new JH3(this.baseDirectory, 0);
 		} catch (JH3Exception e) {
+			System.err.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
 	}
@@ -142,6 +143,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				System.err.println("[Jclouds-H3] Error creating Bucket " + container + " " + H3StorageStrategyImpl.H3client.getStatus());
 			}
 		} catch (JH3Exception e) {
+			System.err.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
 //		if (debug) getAllContainerNames();

@@ -22,10 +22,7 @@ package org.jclouds.h3.reference;
 public final class H3Constants {
 
 	/** Specify the base directory where provider starts its file operations - must exists */
-	public static final String PROPERTY_BASEDIR = "jclouds.filesystem.basedir";
-
-	/** Specify if the Content-Type of a file should be autodetected if it is not set */
-	public static final String PROPERTY_AUTO_DETECT_CONTENT_TYPE = "jclouds.filesystem.auto-detect-content-type";
+	public static final String PROPERTY_BASEDIR = "jclouds.h3.basedir";
 
 	private H3Constants() {
 		throw new AssertionError("intentionally unimplemented");
