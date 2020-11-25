@@ -23,6 +23,8 @@ public final class H3Constants {
 
 	/** Specify the base directory where provider starts its file operations - must exists */
 	public static final String PROPERTY_BASEDIR = "jclouds.h3.basedir";
+	/** Specify if the Content-Type of a file should be autodetected if it is not set */
+	public static final String PROPERTY_AUTO_DETECT_CONTENT_TYPE = "jclouds.h3.auto-detect-content-type";
 
 	private H3Constants() {
 		throw new AssertionError("intentionally unimplemented");

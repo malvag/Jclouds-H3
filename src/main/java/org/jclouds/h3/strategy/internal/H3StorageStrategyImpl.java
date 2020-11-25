@@ -17,16 +17,22 @@
 package org.jclouds.h3.strategy.internal;
 
 //import com.google.common.base.Supplier;
+
+import com.google.common.base.Supplier;
 import com.google.common.io.ByteStreams;
 import gr.forth.ics.JH3lib.JH3;
+import gr.forth.ics.JH3lib.JH3BucketInfo;
 import gr.forth.ics.JH3lib.JH3Exception;
 import gr.forth.ics.JH3lib.JH3Object;
 import org.jclouds.blobstore.LocalStorageStrategy;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobBuilder;
 import org.jclouds.blobstore.domain.ContainerAccess;
+import org.jclouds.blobstore.domain.MutableStorageMetadata;
 import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.blobstore.domain.BlobAccess;
+import org.jclouds.blobstore.domain.StorageType;
+import org.jclouds.blobstore.domain.internal.MutableStorageMetadataImpl;
 import org.jclouds.blobstore.options.CreateContainerOptions;
 import org.jclouds.blobstore.options.ListContainerOptions;
 import org.jclouds.domain.Location;
@@ -48,6 +54,7 @@ import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -61,11 +68,11 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	@Resource
 	protected Logger logger = Logger.NULL;
 
-	protected final Provider<BlobBuilder> blobBuilders;
-	protected final String baseDirectory;
-	protected final H3ContainerNameValidator H3ContainerNameValidator;
-	protected final H3BlobKeyValidator H3BlobKeyValidator;
-//	private final Supplier<Location> defaultLocation;
+	protected Provider<BlobBuilder> blobBuilders;
+	protected String baseDirectory;
+	protected H3ContainerNameValidator H3ContainerNameValidator;
+	protected H3BlobKeyValidator H3BlobKeyValidator;
+	private final Supplier<Location> defaultLocation;
 
 	static {
 		storageURI = System.getenv("H3LIB_STORAGE_URI");
@@ -78,16 +85,18 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	protected H3StorageStrategyImpl(Provider<BlobBuilder> blobBuilders,
 									@Named(H3Constants.PROPERTY_BASEDIR) String baseDir,
 									H3ContainerNameValidator h3ContainerNameValidator,
-									H3BlobKeyValidator h3BlobKeyValidator) {
-//									,Supplier<Location> defaultLocation
-
+									H3BlobKeyValidator h3BlobKeyValidator,
+									Supplier<Location> defaultLocation) {
 		this.blobBuilders = checkNotNull(blobBuilders, "h3 storage strategy blobBuilders");
 		this.baseDirectory = checkNotNull(baseDir, "h3 storage strategy base directory");
 		this.H3ContainerNameValidator = checkNotNull(h3ContainerNameValidator,
 				"h3 container name validator");
+
 		this.H3BlobKeyValidator = checkNotNull(h3BlobKeyValidator, "h3 blob key validator");
-//		this.defaultLocation = defaultLocation;
+
+		this.defaultLocation = defaultLocation;
 		System.out.println("[Jclouds-H3] new H3StorageStrategyImpl with " + baseDir);
+
 		try {
 			H3StorageStrategyImpl.H3client = new JH3(this.baseDirectory, 0);
 		} catch (JH3Exception e) {
@@ -141,7 +150,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	public boolean createContainerInLocation(String container, Location location, CreateContainerOptions options) {
 		System.out.println("[Jclouds-H3] createContainerInLocation");
 		try {
-			if (H3StorageStrategyImpl.H3client.createBucket(container)){
+			if (H3StorageStrategyImpl.H3client.createBucket(container)) {
 				return true;
 			} else {
 				System.err.println("[Jclouds-H3] Error creating Bucket " + container + " " + H3StorageStrategyImpl.H3client.getStatus());
@@ -197,14 +206,23 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	@Override
 	public StorageMetadata getContainerMetadata(String container) {
 		System.out.println("[Jclouds-H3] getContainerMetadata");
+		MutableStorageMetadata metadata = new MutableStorageMetadataImpl();
 		try {
-			H3StorageStrategyImpl.H3client.infoBucket(container);
-			System.out.println("[Jclouds-H3] not yet finished implementing");
-			System.exit(-1);
+			JH3BucketInfo info = H3StorageStrategyImpl.H3client.infoBucket(container);
+			System.out.println(info.toString());
+			metadata.setName(container);
+			metadata.setType(StorageType.CONTAINER);
+			metadata.setLocation(getLocation(container));
+			if (info.getStats() != null){
+				metadata.setLastModified(new Date(info.getStats().getLastModification().getSeconds() * 1000L));
+				metadata.setSize(info.getStats().getSize());
+			}
+			metadata.setCreationDate(new Date(info.getCreation().getSeconds() * 1000L));
+			System.out.println("[Jclouds-H3] not yet finished implementing " + new Date(info.getCreation().getSeconds()));
 		} catch (JH3Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return metadata;
 	}
 
 	@Override
@@ -262,7 +280,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				System.err.println("containerName doesnt exist");
 				System.exit(1);
 			}
-			data_bytes  = ByteStreams.toByteArray(payload.openStream());
+			data_bytes = ByteStreams.toByteArray(payload.openStream());
 
 			JH3Object object = new JH3Object(data_bytes, data_bytes.length);
 			try {
@@ -296,7 +314,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	public void removeBlob(String container, String key) {
 		System.out.println("[Jclouds-H3] removeBlob");
 		try {
-			if (!H3client.deleteObject(container, key)){
+			if (!H3client.deleteObject(container, key)) {
 				System.err.println("[Jclouds-H3] Error deleting Object! " + H3StorageStrategyImpl.H3client.getStatus());
 			}
 		} catch (JH3Exception e) {
@@ -326,8 +344,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	@Override
 	public Location getLocation(String containerName) {
 		System.out.println("[Jclouds-H3] getLocation");
-
-		return null;
+		return defaultLocation.get();
 	}
 
 	@Override

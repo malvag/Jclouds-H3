@@ -35,7 +35,7 @@ public class H3BlobUtilsImpl implements BlobUtils {
 	@Inject
 	public H3BlobUtilsImpl(LocalStorageStrategy storageStrategy, Provider<BlobBuilder> blobBuilders) {
 		this.storageStrategy = (H3StorageStrategyImpl) checkNotNull(storageStrategy, "H3 Storage Strategy");
-		this.blobBuilders = checkNotNull(blobBuilders, "Filesystem  blobBuilders");
+		this.blobBuilders = checkNotNull(blobBuilders, "H3  blobBuilders");
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class H3BlobUtilsImpl implements BlobUtils {
 	@Override
 	public boolean directoryExists(String containerName, String directory) {
 //		return storageStrategy.directoryExists(containerName, directory);
-		System.out.println("Not yet implemented");
+		System.out.println("[Jclouds-H3][directoryExists]Not yet implemented");
 
 		return false;
 	}
@@ -54,14 +54,14 @@ public class H3BlobUtilsImpl implements BlobUtils {
 	@Override
 	public void createDirectory(String containerName, String directory) {
 //		storageStrategy.createDirectory(containerName, directory);
-		System.out.println("Not yet implemented");
+		System.out.println("[Jclouds-H3][createDirectory]Not yet implemented");
 
 	}
 
 	@Override
 	public long countBlobs(String container, ListContainerOptions options) {
 //		return storageStrategy.countBlobs(container, options);
-		System.out.println("Not yet implemented");
+		System.out.println("[Jclouds-H3][createDirectory]Not yet implemented");
 
 		return 0;
 	}
@@ -73,7 +73,7 @@ public class H3BlobUtilsImpl implements BlobUtils {
 
 	@Override
 	public void deleteDirectory(String container, String directory) {
-		System.out.println("Not yet implemented");
+		System.out.println("[Jclouds-H3][deleteDirectory]Not yet implemented");
 
 //		storageStrategy.deleteDirectory(container, directory);
 	}
