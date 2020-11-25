@@ -16,7 +16,7 @@
  */
 package org.jclouds.h3.strategy.internal;
 
-import com.google.common.base.Supplier;
+//import com.google.common.base.Supplier;
 import com.google.common.io.ByteStreams;
 import gr.forth.ics.JH3lib.JH3;
 import gr.forth.ics.JH3lib.JH3Exception;
@@ -65,7 +65,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	protected final String baseDirectory;
 	protected final H3ContainerNameValidator H3ContainerNameValidator;
 	protected final H3BlobKeyValidator H3BlobKeyValidator;
-	private final Supplier<Location> defaultLocation;
+//	private final Supplier<Location> defaultLocation;
 
 	static {
 		storageURI = System.getenv("H3LIB_STORAGE_URI");
@@ -78,19 +78,20 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	protected H3StorageStrategyImpl(Provider<BlobBuilder> blobBuilders,
 									@Named(H3Constants.PROPERTY_BASEDIR) String baseDir,
 									H3ContainerNameValidator h3ContainerNameValidator,
-									H3BlobKeyValidator h3BlobKeyValidator,
-									Supplier<Location> defaultLocation) {
+									H3BlobKeyValidator h3BlobKeyValidator) {
+//									,Supplier<Location> defaultLocation
+
 		this.blobBuilders = checkNotNull(blobBuilders, "h3 storage strategy blobBuilders");
 		this.baseDirectory = checkNotNull(baseDir, "h3 storage strategy base directory");
 		this.H3ContainerNameValidator = checkNotNull(h3ContainerNameValidator,
 				"h3 container name validator");
 		this.H3BlobKeyValidator = checkNotNull(h3BlobKeyValidator, "h3 blob key validator");
-		this.defaultLocation = defaultLocation;
+//		this.defaultLocation = defaultLocation;
 		System.out.println("[Jclouds-H3] new H3StorageStrategyImpl with " + baseDir);
 		try {
 			H3StorageStrategyImpl.H3client = new JH3(this.baseDirectory, 0);
 		} catch (JH3Exception e) {
-			System.err.println(H3StorageStrategyImpl.H3client.getStatus());
+			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
 	}
@@ -120,6 +121,8 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 		ArrayList<String> buckets = null;
 		try {
 			buckets = H3StorageStrategyImpl.H3client.listBuckets();
+			if (buckets == null)
+				return null;
 			buckets.trimToSize();
 			if (debug) {
 				for (String bucket : buckets) {
@@ -127,6 +130,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				}
 			}
 		} catch (JH3Exception e) {
+			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
 
@@ -143,10 +147,9 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				System.err.println("[Jclouds-H3] Error creating Bucket " + container + " " + H3StorageStrategyImpl.H3client.getStatus());
 			}
 		} catch (JH3Exception e) {
-			System.err.println(H3StorageStrategyImpl.H3client.getStatus());
+			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
-//		if (debug) getAllContainerNames();
 		return false;
 	}
 
