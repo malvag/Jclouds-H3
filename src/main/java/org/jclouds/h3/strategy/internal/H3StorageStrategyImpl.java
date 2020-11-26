@@ -16,7 +16,6 @@
  */
 package org.jclouds.h3.strategy.internal;
 
-//import com.google.common.base.Supplier;
 
 import com.google.common.base.Supplier;
 import com.google.common.io.ByteStreams;
@@ -24,6 +23,7 @@ import gr.forth.ics.JH3lib.JH3;
 import gr.forth.ics.JH3lib.JH3BucketInfo;
 import gr.forth.ics.JH3lib.JH3Exception;
 import gr.forth.ics.JH3lib.JH3Object;
+import gr.forth.ics.JH3lib.JH3ObjectInfo;
 import org.jclouds.blobstore.LocalStorageStrategy;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobBuilder;
@@ -32,6 +32,7 @@ import org.jclouds.blobstore.domain.MutableStorageMetadata;
 import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.blobstore.domain.BlobAccess;
 import org.jclouds.blobstore.domain.StorageType;
+import org.jclouds.blobstore.domain.Tier;
 import org.jclouds.blobstore.domain.internal.MutableStorageMetadataImpl;
 import org.jclouds.blobstore.options.CreateContainerOptions;
 import org.jclouds.blobstore.options.ListContainerOptions;
@@ -48,13 +49,13 @@ import javax.inject.Inject;
 
 import javax.inject.Named;
 import javax.inject.Provider;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -165,7 +166,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	@Override
 	public ContainerAccess getContainerAccess(String container) {
 		System.out.println("[Jclouds-H3] getContainerAccess");
-		return null;
+		return ContainerAccess.PUBLIC_READ;
 	}
 
 	@Override
@@ -209,7 +210,10 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 		MutableStorageMetadata metadata = new MutableStorageMetadataImpl();
 		try {
 			JH3BucketInfo info = H3StorageStrategyImpl.H3client.infoBucket(container);
-			System.out.println(info.toString());
+//			System.out.println(info.toString());
+			if (info == null){
+				throw new IllegalStateException();
+			}
 			metadata.setName(container);
 			metadata.setType(StorageType.CONTAINER);
 			metadata.setLocation(getLocation(container));
@@ -217,9 +221,9 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				metadata.setLastModified(new Date(info.getStats().getLastModification().getSeconds() * 1000L));
 				metadata.setSize(info.getStats().getSize());
 			}
-			metadata.setCreationDate(new Date(info.getCreation().getSeconds() * 1000L));
+			metadata.setCreationDate(this.getJH3Date(info.getCreation().getSeconds()));
 			System.out.println("[Jclouds-H3] not yet finished implementing " + new Date(info.getCreation().getSeconds()));
-		} catch (JH3Exception e) {
+		} catch (JH3Exception | IllegalStateException e) {
 			e.printStackTrace();
 		}
 		return metadata;
@@ -242,26 +246,51 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	@Override
 	public Iterable<String> getBlobKeysInsideContainer(String container, String prefix) throws IOException {
 		System.out.println("[Jclouds-H3] getBlobKeysInsideContainer");
-
+		try {
+			ArrayList<String> arrayList = H3StorageStrategyImpl.H3client.listObjects(container, 0);
+			if (arrayList != null) {
+				for (String s : arrayList) {
+					System.out.println(s);
+				}
+				return arrayList;
+			}
+		} catch (JH3Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(H3StorageStrategyImpl.H3client.getStatus());
 		return null;
 	}
 
 	@Override
 	public Blob getBlob(String containerName, String blobName) {
 		System.out.println("[Jclouds-H3] getBlob");
+//		File file = getFileForBlobKey(containerName, blobName);
+//		ByteSource byteSource;
+//		byteSource = Files.asByteSource(file);
+		BlobBuilder builder =  blobBuilders.get();
+		builder.name(blobName);
+		Tier tier = Tier.STANDARD;
 		try {
-
-			JH3Object jh3Object = H3StorageStrategyImpl.H3client.readObject(containerName, blobName);
+			JH3ObjectInfo objectInfo = H3client.infoObject(containerName, blobName);
+			System.out.println(objectInfo);
+			JH3Object jh3Object = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, 0, objectInfo.getSize());
+			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
 			if (jh3Object != null) {
 //				System.out.println("[Jclouds-H3] not yet implemented / dont know how to convert JH3Object to Blob");
-				return blobBuilders.get().name(blobName)
-						.payload(jh3Object.getData())
-						.contentLength(jh3Object.getSize())
-						.build();
+				builder.payload(jh3Object.getData())
+						.contentLength(jh3Object.getData().length)
+						.tier(tier);
+				Blob blob = builder.build();
+				blob.getMetadata().setContainer(containerName);
+				blob.getMetadata().setCreationDate(this.getJH3Date(objectInfo.getCreation().getSeconds()));
+				blob.getMetadata().setLastModified(this.getJH3Date(objectInfo.getLastModification().getSeconds()));
+				blob.getMetadata().setSize(jh3Object.getSize());
+				return blob;
 			}
 
 
 		} catch (JH3Exception e) {
+			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
 		System.err.println("[Jclouds-H3] Bucket or object doesn't exist!");
@@ -270,9 +299,12 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 
 	@Override
 	public String putBlob(String containerName, Blob blob) throws IOException {
-		System.out.println("[Jclouds-H3] putBlob");
+		System.out.println("[Jclouds-H3] putBlob" + blob);
 		String blobKey = blob.getMetadata().getName();
 		Payload payload = blob.getPayload();
+		H3ContainerNameValidator.validate(containerName);
+		H3BlobKeyValidator.validate(blobKey);
+		String tmpBlobName = blobKey + "-" + UUID.randomUUID();
 		InputStream inputStream = null;
 		byte[] data_bytes = null;
 		try {
@@ -280,11 +312,15 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				System.err.println("containerName doesnt exist");
 				System.exit(1);
 			}
-			data_bytes = ByteStreams.toByteArray(payload.openStream());
 
-			JH3Object object = new JH3Object(data_bytes, data_bytes.length);
+			inputStream = payload.openStream();
+			data_bytes = ByteStreams.toByteArray(inputStream);
+			long expectedSize = blob.getMetadata().getContentMetadata().getContentLength();
+
+			JH3Object object = new JH3Object(data_bytes, expectedSize > 0 ? expectedSize : 1);
+
 			try {
-				if (H3StorageStrategyImpl.H3client.createObject(containerName, blob.getMetadata().getName(), object)) {
+				if (H3StorageStrategyImpl.H3client.writeObject(containerName, blob.getMetadata().getName(), object)) {
 					logger.debug("Put object with key [%s] to container [%s] successfully", blobKey, containerName);
 					return blobKey;
 				} else {
@@ -295,7 +331,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				e.printStackTrace();
 			}
 		} finally {
-
 			if (inputStream != null) {
 				try {
 					inputStream.close();
@@ -325,7 +360,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	@Override
 	public BlobAccess getBlobAccess(String container, String key) {
 		System.out.println("[Jclouds-H3] getBlobAccess");
-		return null;
+		return BlobAccess.PUBLIC_READ;
 	}
 
 	@Override
@@ -352,42 +387,10 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 		System.out.println("[Jclouds-H3] getSeparator");
 
 
-		return null;
+		return "/";
 	}
 
-	/**
-	 * Check if the file system resource whose name is obtained applying buildPath on the input path
-	 * tokens is a directory, otherwise a RuntimeException is thrown
-	 *
-	 * @param tokens the tokens that make up the name of the resource on the file system
-	 */
-	private boolean buildPathAndChecksIfDirectoryExists(String... tokens) {
-		String path = buildPathStartingFromBaseDir(tokens);
-		File file = new File(path);
-		boolean exists = file.exists() || file.isDirectory();
-		return exists;
-	}
 
-	/**
-	 * Facility method used to concatenate path tokens normalizing separators
-	 *
-	 * @param pathTokens all the string in the proper order that must be concatenated in order to obtain the
-	 *                   filename
-	 * @return the resulting string
-	 */
-	protected String buildPathStartingFromBaseDir(String... pathTokens) {
-		String normalizedToken = removeFileSeparatorFromBorders(normalize(baseDirectory), true);
-		StringBuilder completePath = new StringBuilder(normalizedToken);
-		if (pathTokens != null && pathTokens.length > 0) {
-			for (int i = 0; i < pathTokens.length; i++) {
-				if (pathTokens[i] != null) {
-					normalizedToken = removeFileSeparatorFromBorders(normalize(pathTokens[i]), false);
-					completePath.append(File.separator).append(normalizedToken);
-				}
-			}
-		}
-		return completePath.toString();
-	}
 
 	/**
 	 * Remove leading and trailing separator character from the string.
@@ -415,34 +418,11 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 		return pathToBeCleaned.substring(beginIndex, endIndex);
 	}
 
-	public boolean directoryExists(String container, String directory) {
-		return buildPathAndChecksIfDirectoryExists(container, directory);
+
+
+	private Date getJH3Date(long epoch_seconds){
+		return new Date(epoch_seconds * 1000L);
 	}
 
-	/**
-	 * Convert path to the current OS filesystem standard
-	 *
-	 * @param path
-	 * @return
-	 */
-	private static String normalize(String path) {
-		if (null != path) {
-			if (Utils.isWindows()) {
-				path = path.replace("\\", File.separator);
-			}
-			return path.replace("/", File.separator);
-		}
-		return path;
-	}
-
-	/**
-	 * Convert path to jclouds standard (/)
-	 */
-	private static String denormalize(String path) {
-		if (null != path && Utils.isWindows()) {
-			return path.replace("\\", "/");
-		}
-		return path;
-	}
 
 }
