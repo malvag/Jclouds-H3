@@ -2,7 +2,7 @@
 # The jclouds API for accessing H3 as a blobstore.
 #
 # TODO: Implementation status.
-> S3proxy:1.7.1: it says we should compile it with JDK 7 and their tests can't even run in JDK 7. 
+> S3proxy:1.7.1: it can't run in JDK 7 (based on instructions). 
 (change_JDK:JDK 8)
 
 
