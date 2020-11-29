@@ -25,8 +25,8 @@ import org.jclouds.blobstore.LocalBlobRequestSigner;
 import org.jclouds.blobstore.LocalStorageStrategy;
 import org.jclouds.blobstore.attr.ConsistencyModel;
 import org.jclouds.blobstore.config.BlobStoreObjectModule;
-import org.jclouds.blobstore.config.LocalBlobStore;
 import org.jclouds.blobstore.util.BlobUtils;
+import org.jclouds.h3.blobStore.H3BlobStore;
 import org.jclouds.h3.predicates.validators.H3BlobKeyValidator;
 import org.jclouds.h3.predicates.validators.H3ContainerNameValidator;
 import org.jclouds.h3.predicates.validators.internal.H3BlobKeyValidatorImpl;
@@ -35,13 +35,11 @@ import org.jclouds.h3.strategy.internal.H3StorageStrategyImpl;
 import org.jclouds.h3.util.internal.H3BlobUtilsImpl;
 
 import static org.jclouds.h3.util.Utils.isWindows;
-//	import org.jclouds.blobstore.util.BlobUtils;
-//	import com.google.inject.AbstractModule;
 
 public class H3ContextModule extends AbstractModule {
 	@Override
 	protected void configure() {
-		bind(BlobStore.class).to(LocalBlobStore.class);
+		bind(BlobStore.class).to(H3BlobStore.class);
 		install(new BlobStoreObjectModule());
 			if (isWindows()) {
 				bind(ConsistencyModel.class).toInstance(ConsistencyModel.EVENTUAL);
