@@ -11,14 +11,14 @@
 * Had to manually merge bytes from data packets in getBlob (getting 100MB file was SIGSEGV-ing the JVM) so we get small chunks as long as we get JH3_CONTINUE as Status
 
 
-####S3proxy:1.7.1:
+#### S3proxy:1.7.1:
  
  - It says we should compile it with JDK 7 and their tests can't run in JDK 7.(change_JDK:JDK 8)
  
  - S3proxy:1.7.1: JRE has to run with JRE 9+ to pass class mismatch with JH3.(change_JRE:JDK 9+)
 
 
-####Jclouds:2.2.1: 
+#### Jclouds:2.2.1: 
 
  - It uses animal-sniffer-plugin that can check signatures up to JDK 8 but our JH3 has JDK 9 as a target so we can’t compile them with the animal-sniffer-plugin    active. (maven-plugin: animal-sniffer-plugin:skipped)
  
