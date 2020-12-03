@@ -269,9 +269,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	@Override
 	public Blob getBlob(String containerName, String blobName) {
 		System.out.println("[Jclouds-H3] getBlob");
-//		File file = getFileForBlobKey(containerName, blobName);
-//		ByteSource byteSource;
-//		byteSource = Files.asByteSource(file);
 		BlobBuilder builder = blobBuilders.get();
 		builder.name(blobName);
 		Tier tier = Tier.STANDARD;
@@ -279,38 +276,30 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 			JH3ObjectInfo objectInfo = H3client.infoObject(containerName, blobName);
 			System.out.println(objectInfo);
 			JH3Object jh3Object = H3StorageStrategyImpl.H3client.readObject(containerName, blobName);
-//			byte[] data = null;
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 			if (jh3Object != null) {
 				long size_offset = jh3Object.getData().length;
 				long remaining_size = objectInfo.getSize();
 				int counter = 0;
+				/**
+				 * Get every chunk of data as long as we get JH3_CONTINUE as Status
+				 */
 				while (H3StorageStrategyImpl.H3client.getStatus() == JH3Status.JH3_CONTINUE) {
-//					data = jh3Object.getData();
 					JH3Object tmp_obj = null;
 					if (size_offset <= remaining_size)
 						tmp_obj = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, size_offset * counter, size_offset);
 					else
 						tmp_obj = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, size_offset * counter, remaining_size);
 					remaining_size -= size_offset;
-					System.out.println(counter + " " + remaining_size + " " + size_offset + " " + objectInfo.getSize());
 					counter += 1;
-//					byte[] dst_data = new byte[outputStream.size() + tmp_obj.getData().length];
-//					System.arraycopy(data, 0, dst_data, 0, data.length);
-//					System.arraycopy(tmp_obj.getData(), 0, dst_data, data.length, tmp_obj.getData().length);
-//					byte[] c = new byte[a.length + b.length];
-//					System.arraycopy(a, 0, c, 0, a.length);
-//					System.arraycopy(b, 0, c, a.length, b.length);
-//					outputStream.write(data);
 					outputStream.write(tmp_obj.getData());
-//					jh3Object.setData(out);
 				}
+
 				jh3Object.setData(outputStream.toByteArray());
 				jh3Object.setSize(objectInfo.getSize());
 
 				System.out.println(H3StorageStrategyImpl.H3client.getStatus());
-				System.out.println(jh3Object.getSize());
-//				System.out.println("[Jclouds-H3] not yet implemented / dont know how to convert JH3Object to Blob");
+//				System.out.println(jh3Object.getSize());
 				builder.payload(jh3Object.getData())
 						.contentLength(jh3Object.getSize())
 						.tier(tier);
