@@ -1,6 +1,6 @@
-#
-# The jclouds API for accessing H3 as a blobstore.
-#
+
+## The jclouds API for accessing H3 as a blobstore.
+
 
 * Waiting to get Etags and partEtags from H3 team
 
@@ -29,7 +29,3 @@
  Generating 2,048 bit RSA key pair and self-signed certificate (SHA256withRSA) with a validity of 90 days for: CN=Evangelos Maliaroudakis, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=GR
 Pass: CARVICS
 
-
-
-# TODO: Supported features.
-# TODO: Usage example.
