@@ -29,3 +29,15 @@
  Generating 2,048 bit RSA key pair and self-signed certificate (SHA256withRSA) with a validity of 90 days for: CN=Evangelos Maliaroudakis, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=GR
 Pass: CARVICS
 
+### s3proxy.conf
+```properties
+s3proxy.secure-endpoint=https://0.0.0.0:8080
+s3proxy.keystore-path=keystore.jks
+s3proxy.keystore-password=CARVICS
+s3proxy.authorization=aws-v2-or-v4
+
+s3proxy.identity=test:tester
+s3proxy.credential=testing
+jclouds.provider=h3
+jclouds.h3.basedir=file:///tmp/demo_h3via_jclouds
+```
