@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package org.jclouds.h3.blobStore;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Throwables.getCausalChain;
@@ -38,15 +39,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.google.common.hash.Hasher;
-import com.google.common.hash.Hashing;
+import com.google.common.io.ByteStreams;
+import gr.forth.ics.JH3lib.JH3Exception;
+import gr.forth.ics.JH3lib.JH3MultipartId;
+import gr.forth.ics.JH3lib.JH3Object;
+import gr.forth.ics.JH3lib.JH3PartInfo;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.ContainerNotFoundException;
@@ -55,7 +58,6 @@ import org.jclouds.blobstore.LocalStorageStrategy;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobAccess;
 import org.jclouds.blobstore.domain.BlobBuilder;
-import org.jclouds.blobstore.domain.BlobBuilder.PayloadBlobBuilder;
 import org.jclouds.blobstore.domain.BlobMetadata;
 import org.jclouds.blobstore.domain.ContainerAccess;
 import org.jclouds.blobstore.domain.MultipartPart;
@@ -65,7 +67,6 @@ import org.jclouds.blobstore.domain.MutableStorageMetadata;
 import org.jclouds.blobstore.domain.PageSet;
 import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.blobstore.domain.StorageType;
-import org.jclouds.blobstore.domain.Tier;
 import org.jclouds.blobstore.domain.internal.MutableStorageMetadataImpl;
 import org.jclouds.blobstore.domain.internal.PageSetImpl;
 import org.jclouds.blobstore.options.CopyOptions;
@@ -77,6 +78,7 @@ import org.jclouds.blobstore.util.BlobStoreUtils;
 import org.jclouds.blobstore.util.BlobUtils;
 import org.jclouds.collect.Memoized;
 import org.jclouds.domain.Location;
+import org.jclouds.h3.strategy.internal.H3StorageStrategyImpl;
 import org.jclouds.http.HttpCommand;
 import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpResponse;
@@ -100,7 +102,6 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteSource;
 import com.google.common.net.HttpHeaders;
 
@@ -142,7 +143,9 @@ public final class H3BlobStore implements BlobStore {
 		return blobUtils.blobBuilder().name(name);
 	}
 
-	/** This implementation invokes {@link #list(String, ListContainerOptions)} */
+	/**
+	 * This implementation invokes {@link #list(String, ListContainerOptions)}
+	 */
 	@Override
 	public PageSet<? extends StorageMetadata> list(String containerName) {
 		return this.list(containerName, ListContainerOptions.NONE);
@@ -197,7 +200,7 @@ public final class H3BlobStore implements BlobStore {
 	}
 
 	/**
-	 * This implementation invokes {@link #getBlob(String,String, GetOptions)}
+	 * This implementation invokes {@link #getBlob(String, String, GetOptions)}
 	 */
 	@Override
 	public Blob getBlob(String containerName, String key) {
@@ -630,6 +633,9 @@ public final class H3BlobStore implements BlobStore {
 	@Override
 	public Blob getBlob(String containerName, String key, GetOptions options) {
 		logger.debug("Retrieving blob with key %s from container %s", key, containerName);
+		for (String range : options.getRanges()) {
+			logger.debug("with range %s", range);
+		}
 		// If the container doesn't exist, an exception is thrown
 		if (!storageStrategy.containerExists(containerName)) {
 			logger.debug("Container %s does not exist", containerName);
@@ -812,150 +818,116 @@ public final class H3BlobStore implements BlobStore {
 
 	@Override
 	public MultipartUpload initiateMultipartUpload(String container, BlobMetadata blobMetadata, PutOptions options) {
-		String uploadId = UUID.randomUUID().toString();
-		// create a stub blob
-		Blob blob = blobBuilder(MULTIPART_PREFIX + uploadId + "-" + blobMetadata.getName() + "-stub").payload(ByteSource.empty()).build();
-		putBlob(container, blob);
+		System.out.println("[Jclouds-H3] initiateMultipartUpload " + blobMetadata.getName());
+		options.setBlobAccess(BlobAccess.PUBLIC_READ);
+//		options.multipart()
+		JH3MultipartId multipartId = null;
+		try {
+			multipartId = H3StorageStrategyImpl.getH3client().createMultipart(container, blobMetadata.getName());
+		} catch (JH3Exception e) {
+			e.printStackTrace();
+		}
+		String uploadId = multipartId.getMultipartId(); //UUID.randomUUID().toString();
 		return MultipartUpload.create(container, blobMetadata.getName(), uploadId,
 				blobMetadata, options);
 	}
 
 	@Override
 	public void abortMultipartUpload(MultipartUpload mpu) {
-		List<MultipartPart> parts = listMultipartUpload(mpu);
-		for (MultipartPart part : parts) {
-			removeBlob(mpu.containerName(), MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-" + part.partNumber());
+//		List<MultipartPart> parts = listMultipartUpload(mpu);
+//		for (MultipartPart part : parts) {
+//			removeBlob(mpu.containerName(), MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-" + part.partNumber());
+//		}
+//		removeBlob(mpu.containerName(), MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-stub");
+		try {
+			H3StorageStrategyImpl.getH3client().abortMultipart(new JH3MultipartId(mpu.id()));
+		} catch (JH3Exception e) {
+			e.printStackTrace();
 		}
-		removeBlob(mpu.containerName(), MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-stub");
 	}
 
 	@Override
 	public String completeMultipartUpload(MultipartUpload mpu, List<MultipartPart> parts) {
+		System.out.println("[Jclouds-H3] completeMultipartUpload " + mpu.id() + " with " + parts.size());
+
 		ImmutableList.Builder<Blob> blobs = ImmutableList.builder();
 		long contentLength = 0;
-		Hasher md5Hasher = Hashing.md5().newHasher();
+		String eTag = "";
+//		Hasher md5Hasher = Hashing.md5().newHasher();
 
-		for (MultipartPart part : parts) {
-			Blob blobPart = getBlob(mpu.containerName(), MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-" + part.partNumber());
-			contentLength += blobPart.getMetadata().getContentMetadata().getContentLength();
-			blobs.add(blobPart);
-			if (blobPart.getMetadata().getETag() != null) {
-				md5Hasher.putBytes(BaseEncoding.base16().lowerCase().decode(blobPart.getMetadata().getETag()));
-			}
+		try {
+			if (!H3StorageStrategyImpl.getH3client().completeMultipart(new JH3MultipartId(mpu.id())))
+				System.out.println("Error on completing multipart object " + mpu.blobName());
+		} catch (JH3Exception e) {
+			e.printStackTrace();
 		}
-		String mpuETag = new StringBuilder("\"")
-				.append(md5Hasher.hash())
-				.append("-")
-				.append(parts.size())
-				.append("\"")
-				.toString();
-		PayloadBlobBuilder blobBuilder = blobBuilder(mpu.blobName())
-				.userMetadata(mpu.blobMetadata().getUserMetadata())
-				.payload(new H3BlobStore.MultiBlobInputStream(blobs.build()))
-				.contentLength(contentLength)
-				.eTag(mpuETag);
-		String cacheControl = mpu.blobMetadata().getContentMetadata().getCacheControl();
-		if (cacheControl != null) {
-			blobBuilder.cacheControl(cacheControl);
-		}
-		String contentDisposition = mpu.blobMetadata().getContentMetadata().getContentDisposition();
-		if (contentDisposition != null) {
-			blobBuilder.contentDisposition(contentDisposition);
-		}
-		String contentEncoding = mpu.blobMetadata().getContentMetadata().getContentEncoding();
-		if (contentEncoding != null) {
-			blobBuilder.contentEncoding(contentEncoding);
-		}
-		String contentLanguage = mpu.blobMetadata().getContentMetadata().getContentLanguage();
-		if (contentLanguage != null) {
-			blobBuilder.contentLanguage(contentLanguage);
-		}
-		// intentionally not copying MD5
-		String contentType = mpu.blobMetadata().getContentMetadata().getContentType();
-		if (contentType != null) {
-			blobBuilder.contentType(contentType);
-		}
-		Date expires = mpu.blobMetadata().getContentMetadata().getExpires();
-		if (expires != null) {
-			blobBuilder.expires(expires);
-		}
-		Tier tier = mpu.blobMetadata().getTier();
-		if (tier != null) {
-			blobBuilder.tier(tier);
-		}
-
-		putBlob(mpu.containerName(), blobBuilder.build());
-
-		for (MultipartPart part : parts) {
-			removeBlob(mpu.containerName(), MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-" + part.partNumber());
-		}
-		removeBlob(mpu.containerName(), MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-stub");
-
-		setBlobAccess(mpu.containerName(), mpu.blobName(), mpu.putOptions().getBlobAccess());
-
-		return mpuETag;
+		System.out.println("Upon completing multipart " + H3StorageStrategyImpl.getH3client().getStatus());
+		return String.valueOf(5);
 	}
 
 	@Override
 	public MultipartPart uploadMultipartPart(MultipartUpload mpu, int partNumber, Payload payload) {
-		String partName = MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-" + partNumber;
-		Blob blob = blobBuilder(partName)
-				.payload(payload)
-				.build();
-		String partETag = putBlob(mpu.containerName(), blob);
-		BlobMetadata metadata = blobMetadata(mpu.containerName(), partName);  // TODO: racy, how to get this from payload?
-		long partSize = metadata.getContentMetadata().getContentLength();
-		return MultipartPart.create(partNumber, partSize, partETag, metadata.getLastModified());
+		System.out.println("[Jclouds-H3] uploadMultipartPart " + mpu.id() + " part " + partNumber);
+//		String partName = MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-" + partNumber;
+		long partSize = payload.getContentMetadata().getContentLength();
+		Date lastModified = null;  // S3 does not return Last-Modified
+//		BlobMetadata metadata = blobMetadata(mpu.containerName(), mpu.blobName());  // TODO: racy, how to get this from payload?
+		/**
+		 * TBD: H3 has to implement partEtag ?
+		 */
+		//	String eTag = sync.uploadPart(mpu.containerName(), mpu.blobName(), partNumber, mpu.id(), payload);
+		InputStream inputStream = null;
+		try {
+			inputStream = payload.openStream();
+			byte[] data_bytes = ByteStreams.toByteArray(inputStream);
+			logger.debug("part size", partSize);
+			JH3Object object = new JH3Object(data_bytes, partSize > 0 ? partSize : 1);
+			JH3MultipartId multipartId = new JH3MultipartId(mpu.id());
+
+			H3StorageStrategyImpl.getH3client().createPart(object, multipartId, partNumber);
+		} catch (IOException | JH3Exception e) {
+			e.printStackTrace();
+		}
+		return MultipartPart.create(partNumber, partSize, String.valueOf(5), lastModified);
+
 	}
 
 	@Override
 	public List<MultipartPart> listMultipartUpload(MultipartUpload mpu) {
+		JH3MultipartId multipartId = new JH3MultipartId(mpu.id());
+		ArrayList<JH3PartInfo> jh3parts = null;
+		try {
+			jh3parts = H3StorageStrategyImpl.getH3client().listParts(multipartId);
+		} catch (JH3Exception e) {
+			e.printStackTrace();
+		}
+
 		ImmutableList.Builder<MultipartPart> parts = ImmutableList.builder();
-		ListContainerOptions options =
-				new ListContainerOptions().prefix(MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-").recursive();
-		while (true) {
-			PageSet<? extends StorageMetadata> pageSet = list(mpu.containerName(), options);
-			for (StorageMetadata sm : pageSet) {
-				if (sm.getName().endsWith("-stub")) {
-					continue;
-				}
-				int partNumber = Integer.parseInt(sm.getName().substring((MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-").length()));
-				long partSize = sm.getSize();
-				parts.add(MultipartPart.create(partNumber, partSize, sm.getETag(), sm.getLastModified()));
-			}
-			if (pageSet.isEmpty() || pageSet.getNextMarker() == null) {
-				break;
-			}
-			options.afterMarker(pageSet.getNextMarker());
+		for (int i = 0, jh3partsSize = jh3parts.size(); i < jh3partsSize; i++) {
+			JH3PartInfo jh3part = jh3parts.get(i);
+			/**
+			 * Etag TBD
+			 */
+			parts.add(MultipartPart.create(jh3part.getPartNumber(), jh3part.getSize(), String.valueOf(5), null));
 		}
 		return parts.build();
 	}
 
 	@Override
 	public List<MultipartUpload> listMultipartUploads(String container) {
-		ImmutableList.Builder<MultipartUpload> mpus = ImmutableList.builder();
-		ListContainerOptions options = new ListContainerOptions().prefix(MULTIPART_PREFIX).recursive();
-		int uuidLength = UUID.randomUUID().toString().length();
-		while (true) {
-			PageSet<? extends StorageMetadata> pageSet = list(container, options);
-			for (StorageMetadata sm : pageSet) {
-				if (!sm.getName().endsWith("-stub")) {
-					continue;
-				}
-				String uploadId = sm.getName().substring(MULTIPART_PREFIX.length(), MULTIPART_PREFIX.length() + uuidLength);
-				String blobName = sm.getName().substring(MULTIPART_PREFIX.length() + uuidLength + 1);
-				int index = blobName.lastIndexOf('-');
-				blobName = blobName.substring(0, index);
-
-				mpus.add(MultipartUpload.create(container, blobName, uploadId, null, null));
-			}
-			if (pageSet.isEmpty() || pageSet.getNextMarker() == null) {
-				break;
-			}
-			options.afterMarker(pageSet.getNextMarker());
+		ArrayList<JH3MultipartId> jh3Multiparts = null;
+		try {
+			jh3Multiparts = H3StorageStrategyImpl.getH3client().listMultiparts(container, 0);
+		} catch (JH3Exception e) {
+			e.printStackTrace();
 		}
 
-		return mpus.build();
+		ImmutableList.Builder<MultipartUpload> builder = ImmutableList.builder();
+		for (int i = 0; i < jh3Multiparts.size(); i++) {
+			JH3MultipartId jh3Multipart = jh3Multiparts.get(i);
+			builder.add(MultipartUpload.create(container, "malvagos", jh3Multipart.getMultipartId(), null, null));
+		}
+		return builder.build();
 	}
 
 	@Override

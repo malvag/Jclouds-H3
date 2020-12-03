@@ -24,6 +24,7 @@ import gr.forth.ics.JH3lib.JH3BucketInfo;
 import gr.forth.ics.JH3lib.JH3Exception;
 import gr.forth.ics.JH3lib.JH3Object;
 import gr.forth.ics.JH3lib.JH3ObjectInfo;
+import gr.forth.ics.JH3lib.JH3Status;
 import org.jclouds.blobstore.LocalStorageStrategy;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobBuilder;
@@ -49,13 +50,14 @@ import javax.inject.Inject;
 
 import javax.inject.Named;
 import javax.inject.Provider;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.UUID;
+//import java.util.UUID;
 
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -178,6 +180,9 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	public void deleteContainer(String container) {
 		System.out.println("[Jclouds-H3] deleteContainer");
 		try {
+			for (String listObject : H3StorageStrategyImpl.H3client.listObjects(container, 0)) {
+				H3StorageStrategyImpl.H3client.deleteObject(container, listObject);
+			}
 			if (!H3StorageStrategyImpl.H3client.deleteBucket(container))
 				System.err.println("[Jclouds-H3] Error deleting Bucket " + container + " " + H3StorageStrategyImpl.H3client.getStatus());
 
@@ -211,13 +216,13 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 		try {
 			JH3BucketInfo info = H3StorageStrategyImpl.H3client.infoBucket(container);
 //			System.out.println(info.toString());
-			if (info == null){
+			if (info == null) {
 				throw new IllegalStateException();
 			}
 			metadata.setName(container);
 			metadata.setType(StorageType.CONTAINER);
 			metadata.setLocation(getLocation(container));
-			if (info.getStats() != null){
+			if (info.getStats() != null) {
 				metadata.setLastModified(new Date(info.getStats().getLastModification().getSeconds() * 1000L));
 				metadata.setSize(info.getStats().getSize());
 			}
@@ -267,18 +272,47 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 //		File file = getFileForBlobKey(containerName, blobName);
 //		ByteSource byteSource;
 //		byteSource = Files.asByteSource(file);
-		BlobBuilder builder =  blobBuilders.get();
+		BlobBuilder builder = blobBuilders.get();
 		builder.name(blobName);
 		Tier tier = Tier.STANDARD;
 		try {
 			JH3ObjectInfo objectInfo = H3client.infoObject(containerName, blobName);
 			System.out.println(objectInfo);
-			JH3Object jh3Object = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, 0, objectInfo.getSize());
-			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
+			JH3Object jh3Object = H3StorageStrategyImpl.H3client.readObject(containerName, blobName);
+//			byte[] data = null;
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 			if (jh3Object != null) {
+				long size_offset = jh3Object.getData().length;
+				long remaining_size = objectInfo.getSize();
+				int counter = 0;
+				while (H3StorageStrategyImpl.H3client.getStatus() == JH3Status.JH3_CONTINUE) {
+//					data = jh3Object.getData();
+					JH3Object tmp_obj = null;
+					if (size_offset <= remaining_size)
+						tmp_obj = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, size_offset * counter, size_offset);
+					else
+						tmp_obj = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, size_offset * counter, remaining_size);
+					remaining_size -= size_offset;
+					System.out.println(counter + " " + remaining_size + " " + size_offset + " " + objectInfo.getSize());
+					counter += 1;
+//					byte[] dst_data = new byte[outputStream.size() + tmp_obj.getData().length];
+//					System.arraycopy(data, 0, dst_data, 0, data.length);
+//					System.arraycopy(tmp_obj.getData(), 0, dst_data, data.length, tmp_obj.getData().length);
+//					byte[] c = new byte[a.length + b.length];
+//					System.arraycopy(a, 0, c, 0, a.length);
+//					System.arraycopy(b, 0, c, a.length, b.length);
+//					outputStream.write(data);
+					outputStream.write(tmp_obj.getData());
+//					jh3Object.setData(out);
+				}
+				jh3Object.setData(outputStream.toByteArray());
+				jh3Object.setSize(objectInfo.getSize());
+
+				System.out.println(H3StorageStrategyImpl.H3client.getStatus());
+				System.out.println(jh3Object.getSize());
 //				System.out.println("[Jclouds-H3] not yet implemented / dont know how to convert JH3Object to Blob");
 				builder.payload(jh3Object.getData())
-						.contentLength(jh3Object.getData().length)
+						.contentLength(jh3Object.getSize())
 						.tier(tier);
 				Blob blob = builder.build();
 				blob.getMetadata().setContainer(containerName);
@@ -289,7 +323,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 			}
 
 
-		} catch (JH3Exception e) {
+		} catch (JH3Exception | IOException e) {
 			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
@@ -304,7 +338,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 		Payload payload = blob.getPayload();
 		H3ContainerNameValidator.validate(containerName);
 		H3BlobKeyValidator.validate(blobKey);
-		String tmpBlobName = blobKey + "-" + UUID.randomUUID();
 		InputStream inputStream = null;
 		byte[] data_bytes = null;
 		try {
@@ -315,13 +348,17 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 
 			inputStream = payload.openStream();
 			data_bytes = ByteStreams.toByteArray(inputStream);
-			long expectedSize = blob.getMetadata().getContentMetadata().getContentLength();
+			long expectedSize = blob.getMetadata().getContentMetadata().getContentLength() == null ?
+					0 : blob.getMetadata().getContentMetadata().getContentLength();
 
 			JH3Object object = new JH3Object(data_bytes, expectedSize > 0 ? expectedSize : 1);
 
 			try {
 				if (H3StorageStrategyImpl.H3client.writeObject(containerName, blob.getMetadata().getName(), object)) {
 					logger.debug("Put object with key [%s] to container [%s] successfully", blobKey, containerName);
+					/**
+					 *  TBD: E-Tag to be implemented from H3 ?
+					 */
 					return blobKey;
 				} else {
 
@@ -391,7 +428,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	}
 
 
-
 	/**
 	 * Remove leading and trailing separator character from the string.
 	 *
@@ -419,10 +455,11 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	}
 
 
-
-	private Date getJH3Date(long epoch_seconds){
+	private Date getJH3Date(long epoch_seconds) {
 		return new Date(epoch_seconds * 1000L);
 	}
 
-
+	public static JH3 getH3client() {
+		return H3client;
+	}
 }
