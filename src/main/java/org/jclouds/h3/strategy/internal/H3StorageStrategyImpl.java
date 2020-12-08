@@ -276,7 +276,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 			JH3ObjectInfo objectInfo = H3client.infoObject(containerName, blobName);
 			System.out.println(objectInfo);
 			JH3Object jh3Object = H3StorageStrategyImpl.H3client.readObject(containerName, blobName);
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			if (jh3Object != null) {
 				long size_offset = jh3Object.getData().length;
 				long remaining_size = objectInfo.getSize();
@@ -293,9 +293,11 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 					remaining_size -= size_offset;
 					counter += 1;
 					outputStream.write(tmp_obj.getData());
+					jh3Object.setData(outputStream.toByteArray());
 				}
 
-				jh3Object.setData(outputStream.toByteArray());
+				//where do i write bytes in simple downloads
+
 				jh3Object.setSize(objectInfo.getSize());
 
 				System.out.println(H3StorageStrategyImpl.H3client.getStatus());
