@@ -107,8 +107,6 @@ import com.google.common.net.HttpHeaders;
 
 @Singleton
 public final class H3BlobStore implements BlobStore {
-	private static final String MULTIPART_PREFIX = ".mpus-";
-
 	@Resource
 	private Logger logger = Logger.NULL;
 
@@ -915,6 +913,8 @@ public final class H3BlobStore implements BlobStore {
 
 	@Override
 	public List<MultipartUpload> listMultipartUploads(String container) {
+		throw new UnsupportedOperationException();
+		/*
 		ArrayList<JH3MultipartId> jh3Multiparts = null;
 		try {
 			jh3Multiparts = H3StorageStrategyImpl.getH3client().listMultiparts(container, 0);
@@ -925,9 +925,11 @@ public final class H3BlobStore implements BlobStore {
 		ImmutableList.Builder<MultipartUpload> builder = ImmutableList.builder();
 		for (int i = 0; i < jh3Multiparts.size(); i++) {
 			JH3MultipartId jh3Multipart = jh3Multiparts.get(i);
-			builder.add(MultipartUpload.create(container, "malvagos", jh3Multipart.getMultipartId(), null, null));
+			builder.add(MultipartUpload.create(container, "malvag", jh3Multipart.getMultipartId(), null, null));
 		}
 		return builder.build();
+		*/
+
 	}
 
 	@Override
