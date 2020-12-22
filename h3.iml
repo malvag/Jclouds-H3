@@ -84,5 +84,12 @@
     <orderEntry type="library" scope="TEST" name="Maven: xmlunit:xmlunit:1.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.assertj:assertj-core:1.7.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.assertj:assertj-guava:1.3.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jclouds:jclouds-blobstore:0.2-beta" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jclouds:jclouds-gson:0.2-beta" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jclouds:jclouds-gson:0.1-beta" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jclouds:jclouds-gson:0.3-beta" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jclouds:jclouds-gson:0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jclouds:jclouds-gson:0.1.2020-12-22T13:18:50Z-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jclouds:jclouds-resources:2.2.1" level="project" />
   </component>
 </module>

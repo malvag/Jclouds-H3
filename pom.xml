@@ -24,14 +24,13 @@
         <groupId>org.apache.jclouds</groupId>
         <artifactId>jclouds-project</artifactId>
         <version>2.2.1</version>
-        <!-- <relativePath>../../project/pom.xml</relativePath> -->
     </parent>
     <groupId>org.apache.jclouds.api</groupId>
     <artifactId>h3</artifactId>
     <name>jclouds h3 core</name>
     <description>jclouds components to access h3</description>
     <packaging>bundle</packaging>
-    <version>0.2-beta</version>
+    <version>2.2.1</version>
     <properties>
         <jclouds.osgi.export>org.jclouds.h3*;version="${project.version}"</jclouds.osgi.export>
         <jclouds.osgi.import>org.jclouds*;version="${project.version}",*</jclouds.osgi.import>
