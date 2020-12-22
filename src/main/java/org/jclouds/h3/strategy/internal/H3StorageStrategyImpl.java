@@ -206,7 +206,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	@Override
 	public void clearContainer(String container, ListContainerOptions options) {
 		System.out.println("[Jclouds-H3] clearContainer2");
-
+		this.clearContainer(container);
 	}
 
 	@Override
@@ -215,7 +215,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 		MutableStorageMetadata metadata = new MutableStorageMetadataImpl();
 		try {
 			JH3BucketInfo info = H3StorageStrategyImpl.H3client.infoBucket(container);
-//			System.out.println(info.toString());
 			if (info == null) {
 				throw new IllegalStateException();
 			}

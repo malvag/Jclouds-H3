@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1b285b60-e7dd-48bf-ac14-ef9f05576551" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/h3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/h3.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jclouds/h3/strategy/internal/H3StorageStrategyImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jclouds/h3/strategy/internal/H3StorageStrategyImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
