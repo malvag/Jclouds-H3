@@ -31,7 +31,7 @@
     <name>jclouds h3 core</name>
     <description>jclouds components to access h3</description>
     <packaging>bundle</packaging>
-
+    <version>0.2-beta</version>
     <properties>
         <jclouds.osgi.export>org.jclouds.h3*;version="${project.version}"</jclouds.osgi.export>
         <jclouds.osgi.import>org.jclouds*;version="${project.version}",*</jclouds.osgi.import>
