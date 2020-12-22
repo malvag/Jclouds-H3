@@ -2,9 +2,6 @@
 ## The jclouds API for accessing H3 as a blobstore.
 
 
-* Waiting to get Etags and partEtags from H3 team
-
-
 * Have to check on list - filter when deleting a directory of incomplete uploads
 
 
