@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1b285b60-e7dd-48bf-ac14-ef9f05576551" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/h3.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/jclouds/h3/strategy/internal/H3StorageStrategyImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jclouds/h3/strategy/internal/H3StorageStrategyImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -30,7 +31,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../s3proxy" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -73,26 +74,26 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="423" y="200" width="1166" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1608484027239" />
-    <state x="743" y="300" width="426" height="484" key="FileChooserDialogImpl" timestamp="1608545510451">
+    <state x="743" y="300" width="426" height="484" key="FileChooserDialogImpl" timestamp="1610377958930">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="743" y="300" width="426" height="484" key="FileChooserDialogImpl/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1608545510451" />
-    <state width="1874" height="288" key="GridCell.Tab.0.bottom" timestamp="1608644764285">
+    <state x="743" y="300" width="426" height="484" key="FileChooserDialogImpl/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1610377958930" />
+    <state width="1874" height="288" key="GridCell.Tab.0.bottom" timestamp="1610369407225">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="288" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1608644764285" />
-    <state width="1874" height="288" key="GridCell.Tab.0.center" timestamp="1608644764285">
+    <state width="1874" height="288" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1610369407225" />
+    <state width="1874" height="288" key="GridCell.Tab.0.center" timestamp="1610369407225">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="288" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1608644764285" />
-    <state width="1874" height="288" key="GridCell.Tab.0.left" timestamp="1608644764285">
+    <state width="1874" height="288" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1610369407225" />
+    <state width="1874" height="288" key="GridCell.Tab.0.left" timestamp="1610369407225">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="288" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1608644764285" />
-    <state width="1874" height="288" key="GridCell.Tab.0.right" timestamp="1608644764285">
+    <state width="1874" height="288" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1610369407225" />
+    <state width="1874" height="288" key="GridCell.Tab.0.right" timestamp="1610369407225">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="288" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1608644764285" />
+    <state width="1874" height="288" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.1024.768@0.0.1920.1080" timestamp="1610369407225" />
     <state x="447" y="119" key="SettingsEditor" timestamp="1608632719069">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
