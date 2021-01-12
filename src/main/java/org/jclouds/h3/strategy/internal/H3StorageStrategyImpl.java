@@ -103,7 +103,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 		try {
 			H3StorageStrategyImpl.H3client = new JH3(this.baseDirectory, 0);
 		} catch (JH3Exception e) {
-			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
+			System.err.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
 	}
@@ -142,7 +142,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				}
 			}
 		} catch (JH3Exception e) {
-			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
+			System.err.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
 
@@ -159,7 +159,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				System.err.println("[Jclouds-H3] Error creating Bucket " + container + " " + H3StorageStrategyImpl.H3client.getStatus());
 			}
 		} catch (JH3Exception e) {
-			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
+			System.err.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
 		return false;
@@ -226,7 +226,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				metadata.setSize(info.getStats().getSize());
 			}
 			metadata.setCreationDate(this.getJH3Date(info.getCreation().getSeconds()));
-			System.out.println("[Jclouds-H3] not yet finished implementing " + new Date(info.getCreation().getSeconds()));
+//			System.out.println("[Jclouds-H3] not yet finished implementing " + new Date(info.getCreation().getSeconds()));
 		} catch (JH3Exception | IllegalStateException e) {
 			e.printStackTrace();
 		}
@@ -235,7 +235,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 
 	@Override
 	public boolean blobExists(String container, String key) {
-		System.out.println("[Jclouds-H3] blobExists");
+//		System.out.println("[Jclouds-H3] blobExists");
 		boolean exists = true;
 		try {
 			if (H3StorageStrategyImpl.H3client.infoObject(container, key) == null)
@@ -252,72 +252,71 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 		System.out.println("[Jclouds-H3] getBlobKeysInsideContainer");
 		try {
 			ArrayList<String> arrayList = H3StorageStrategyImpl.H3client.listObjects(container, 0);
+			while (H3StorageStrategyImpl.H3client.getStatus() == JH3Status.JH3_CONTINUE) {
+				arrayList.trimToSize();
+				arrayList.addAll(H3StorageStrategyImpl.H3client.listObjects(container, arrayList.size()));
+			}
 			if (arrayList != null) {
-				for (String s : arrayList) {
-					System.out.println(s);
-				}
 				return arrayList;
 			}
 		} catch (JH3Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(H3StorageStrategyImpl.H3client.getStatus());
 		return null;
 	}
 
 	@Override
 	public Blob getBlob(String containerName, String blobName) {
-		System.out.println("[Jclouds-H3] getBlob");
+//		System.out.println("[Jclouds-H3] getBlob");
 		BlobBuilder builder = blobBuilders.get();
 		builder.name(blobName);
 		Tier tier = Tier.STANDARD;
+		long TWO_GIGABYTES = Integer.MAX_VALUE - 8;
 		try {
-			JH3ObjectInfo objectInfo = H3client.infoObject(containerName, blobName);
-			System.out.println(objectInfo);
-			JH3Object jh3Object = H3StorageStrategyImpl.H3client.readObject(containerName, blobName);
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			if (jh3Object != null) {
-				long size_offset = jh3Object.getData().length;
-				long remaining_size = objectInfo.getSize();
-				int counter = 0;
-				/**
-				 * Get every chunk of data as long as we get JH3_CONTINUE as Status
-				 */
-				while (H3StorageStrategyImpl.H3client.getStatus() == JH3Status.JH3_CONTINUE) {
-					JH3Object tmp_obj = null;
-					if (size_offset <= remaining_size)
-						tmp_obj = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, size_offset * counter, size_offset);
-					else
-						tmp_obj = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, size_offset * counter, remaining_size);
-					remaining_size -= size_offset;
-					counter += 1;
-					outputStream.write(tmp_obj.getData());
-					jh3Object.setData(outputStream.toByteArray());
-				}
+			JH3ObjectInfo objectInfo = H3client.infoObject(containerName, blobName);
+			JH3Object jh3Object = null;
 
-				//where do i write bytes in simple downloads
-
-				jh3Object.setSize(objectInfo.getSize());
-
-				System.out.println(H3StorageStrategyImpl.H3client.getStatus());
-//				System.out.println(jh3Object.getSize());
-				builder.payload(jh3Object.getData())
-						.contentLength(jh3Object.getSize())
-						.tier(tier);
-				Blob blob = builder.build();
-				blob.getMetadata().setContainer(containerName);
-				blob.getMetadata().setCreationDate(this.getJH3Date(objectInfo.getCreation().getSeconds()));
-				blob.getMetadata().setLastModified(this.getJH3Date(objectInfo.getLastModification().getSeconds()));
-				blob.getMetadata().setSize(jh3Object.getSize());
-				return blob;
+			jh3Object = H3StorageStrategyImpl.H3client.readObject(containerName, blobName);
+			if (jh3Object == null) {
+				System.err.println("[Jclouds-H3] Object doesn't exist!");
+				return null;
 			}
+			long size_offset = jh3Object.getData().length;
+			long remaining_size = objectInfo.getSize();
+			int counter = 0;
+			/**
+			 * Get every chunk of data as long as we get JH3_CONTINUE as Status
+			 */
+			while (H3StorageStrategyImpl.H3client.getStatus() == JH3Status.JH3_CONTINUE) {
+				JH3Object tmp_obj = null;
+				if (size_offset <= remaining_size)
+					tmp_obj = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, size_offset * counter, size_offset);
+				else
+					tmp_obj = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, size_offset * counter, remaining_size);
+				remaining_size -= size_offset;
+				counter += 1;
+				outputStream.write(tmp_obj.getData());
+				jh3Object.setData(outputStream.toByteArray());
+			}
+			System.out.println(jh3Object);
+
+			jh3Object.setSize(objectInfo.getSize());
+			builder.payload(jh3Object.getData())
+					.contentLength(jh3Object.getSize())
+					.tier(tier);
+			Blob blob = builder.build();
+			blob.getMetadata().setContainer(containerName);
+			blob.getMetadata().setCreationDate(this.getJH3Date(objectInfo.getCreation().getSeconds()));
+			blob.getMetadata().setLastModified(this.getJH3Date(objectInfo.getLastModification().getSeconds()));
+			blob.getMetadata().setSize(jh3Object.getSize());
+			return blob;
 
 
 		} catch (JH3Exception | IOException e) {
-			System.out.println(H3StorageStrategyImpl.H3client.getStatus());
+			System.err.println(H3StorageStrategyImpl.H3client.getStatus());
 			e.printStackTrace();
 		}
-		System.err.println("[Jclouds-H3] Bucket or object doesn't exist!");
 		return null;
 	}
 
