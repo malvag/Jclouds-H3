@@ -868,25 +868,29 @@ public final class H3BlobStore implements BlobStore {
 		System.out.println("[Jclouds-H3] uploadMultipartPart " + mpu.id() + " part " + partNumber);
 //		String partName = MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-" + partNumber;
 		long partSize = payload.getContentMetadata().getContentLength();
+		MultipartPart multipartPart = null;
 		Date lastModified = null;  // S3 does not return Last-Modified
 //		BlobMetadata metadata = blobMetadata(mpu.containerName(), mpu.blobName());  // TODO: racy, how to get this from payload?
 		/**
 		 * TBD: H3 has to implement partEtag ?
 		 */
 		//	String eTag = sync.uploadPart(mpu.containerName(), mpu.blobName(), partNumber, mpu.id(), payload);
-		InputStream inputStream = null;
-		try {
-			inputStream = payload.openStream();
-			byte[] data_bytes = ByteStreams.toByteArray(inputStream);
-			logger.debug("part size", partSize);
-			JH3Object object = new JH3Object(data_bytes, partSize > 0 ? partSize : 1);
-			JH3MultipartId multipartId = new JH3MultipartId(mpu.id());
 
-			H3StorageStrategyImpl.getH3client().createPart(object, multipartId, partNumber);
-		} catch (IOException | JH3Exception e) {
-			e.printStackTrace();
-		}
-		return MultipartPart.create(partNumber, partSize, String.valueOf(5), lastModified);
+			InputStream inputStream = null;
+			try {
+				inputStream = payload.openStream();
+				byte[] data_bytes = ByteStreams.toByteArray(inputStream);
+				logger.debug("part size", partSize);
+				JH3Object object = new JH3Object(data_bytes, partSize > 0 ? partSize : 1);
+				JH3MultipartId multipartId = new JH3MultipartId(mpu.id());
+
+				H3StorageStrategyImpl.getH3client().createPart(object, multipartId, partNumber);
+			} catch (IOException | JH3Exception e) {
+				e.printStackTrace();
+			}
+			multipartPart = MultipartPart.create(partNumber, partSize, String.valueOf(5), lastModified);
+		
+		return multipartPart;
 
 	}
 
