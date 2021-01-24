@@ -159,7 +159,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 
 	@Override
 	public void setContainerAccess(String container, ContainerAccess access) {
-		System.out.println("[Jclouds-H3] setContainerAccess");
+		System.out.println("[Jclouds-H3] setContainerAccess not supported");
 	}
 
 	@Override
@@ -221,7 +221,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 
 	@Override
 	public boolean blobExists(String container, String key) {
-//		System.out.println("[Jclouds-H3] blobExists");
 		boolean exists = true;
 		try {
 			if (H3StorageStrategyImpl.H3client.infoObject(container, key) == null)
@@ -253,13 +252,10 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 
 	@Override
 	public Blob getBlob(String containerName, String blobName) {
-//		System.out.println("[Jclouds-H3] getBlob");
 		synchronized (this) {
-			// System.out.println("New synced getblob");
 			BlobBuilder builder = blobBuilders.get();
 			builder.name(blobName);
 			Tier tier = Tier.STANDARD;
-			long TWO_GIGABYTES = Integer.MAX_VALUE - 8;
 			try {
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				JH3ObjectInfo objectInfo = H3client.infoObject(containerName, blobName);
@@ -287,8 +283,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 					outputStream.write(tmp_obj.getData());
 					jh3Object.setData(outputStream.toByteArray());
 				}
-				// System.out.println(jh3Object);
-
 				jh3Object.setSize(objectInfo.getSize());
 				builder.payload(jh3Object.getData())
 						.contentLength(jh3Object.getSize())
@@ -334,9 +328,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 			try {
 				if (H3StorageStrategyImpl.H3client.writeObject(containerName, blob.getMetadata().getName(), object)) {
 					logger.debug("Put object with key [%s] to container [%s] successfully", blobKey, containerName);
-					/**
-					 *  TBD: E-Tag to be implemented from H3 ?
-					 */
 					return blobKey;
 				} else {
 
@@ -386,9 +377,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 		} catch (JH3Exception e) {
 			e.printStackTrace();
 		}
-//		H3client.setObjectPermissions(container,key,); // need to dive into source code
-
-
 	}
 
 	@Override
@@ -400,38 +388,8 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	@Override
 	public String getSeparator() {
 		System.out.println("[Jclouds-H3] getSeparator");
-
-
 		return "/";
 	}
-
-
-	/**
-	 * Remove leading and trailing separator character from the string.
-	 *
-	 * @param pathToBeCleaned
-	 * @param onlyTrailing    only trailing separator char from path
-	 * @return
-	 */
-	private String removeFileSeparatorFromBorders(String pathToBeCleaned, boolean onlyTrailing) {
-		if (null == pathToBeCleaned || pathToBeCleaned.equals(""))
-			return pathToBeCleaned;
-
-		int beginIndex = 0;
-		int endIndex = pathToBeCleaned.length();
-
-		// search for separator chars
-		if (!onlyTrailing) {
-			if (pathToBeCleaned.charAt(0) == '/' || (pathToBeCleaned.charAt(0) == '\\' && Utils.isWindows()))
-				beginIndex = 1;
-		}
-		if (pathToBeCleaned.charAt(pathToBeCleaned.length() - 1) == '/' ||
-				(pathToBeCleaned.charAt(pathToBeCleaned.length() - 1) == '\\' && Utils.isWindows()))
-			endIndex--;
-
-		return pathToBeCleaned.substring(beginIndex, endIndex);
-	}
-
 
 	private Date getJH3Date(long epoch_seconds) {
 		return new Date(epoch_seconds * 1000L);
