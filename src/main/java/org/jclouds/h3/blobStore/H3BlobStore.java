@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.jclouds.h3.blobStore;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -818,7 +802,6 @@ public final class H3BlobStore implements BlobStore {
 	public MultipartUpload initiateMultipartUpload(String container, BlobMetadata blobMetadata, PutOptions options) {
 		System.out.println("[Jclouds-H3] initiateMultipartUpload " + blobMetadata.getName());
 		options.setBlobAccess(BlobAccess.PUBLIC_READ);
-//		options.multipart()
 		JH3MultipartId multipartId = null;
 		try {
 			multipartId = H3StorageStrategyImpl.getH3client().createMultipart(container, blobMetadata.getName());
@@ -866,17 +849,10 @@ public final class H3BlobStore implements BlobStore {
 	@Override
 	public MultipartPart uploadMultipartPart(MultipartUpload mpu, int partNumber, Payload payload) {
 		System.out.println("[Jclouds-H3] uploadMultipartPart " + mpu.id() + " part " + partNumber);
-//		String partName = MULTIPART_PREFIX + mpu.id() + "-" + mpu.blobName() + "-" + partNumber;
 		long partSize = payload.getContentMetadata().getContentLength();
 		MultipartPart multipartPart = null;
 		Date lastModified = null;  // S3 does not return Last-Modified
-//		BlobMetadata metadata = blobMetadata(mpu.containerName(), mpu.blobName());  // TODO: racy, how to get this from payload?
-		/**
-		 * TBD: H3 has to implement partEtag ?
-		 */
-		//	String eTag = sync.uploadPart(mpu.containerName(), mpu.blobName(), partNumber, mpu.id(), payload);
-
-			InputStream inputStream = null;
+		InputStream inputStream = null;
 			try {
 				inputStream = payload.openStream();
 				byte[] data_bytes = ByteStreams.toByteArray(inputStream);
@@ -907,9 +883,6 @@ public final class H3BlobStore implements BlobStore {
 		ImmutableList.Builder<MultipartPart> parts = ImmutableList.builder();
 		for (int i = 0, jh3partsSize = jh3parts.size(); i < jh3partsSize; i++) {
 			JH3PartInfo jh3part = jh3parts.get(i);
-			/**
-			 * Etag TBD
-			 */
 			parts.add(MultipartPart.create(jh3part.getPartNumber(), jh3part.getSize(), String.valueOf(5), null));
 		}
 		return parts.build();
@@ -918,22 +891,6 @@ public final class H3BlobStore implements BlobStore {
 	@Override
 	public List<MultipartUpload> listMultipartUploads(String container) {
 		throw new UnsupportedOperationException();
-		/*
-		ArrayList<JH3MultipartId> jh3Multiparts = null;
-		try {
-			jh3Multiparts = H3StorageStrategyImpl.getH3client().listMultiparts(container, 0);
-		} catch (JH3Exception e) {
-			e.printStackTrace();
-		}
-
-		ImmutableList.Builder<MultipartUpload> builder = ImmutableList.builder();
-		for (int i = 0; i < jh3Multiparts.size(); i++) {
-			JH3MultipartId jh3Multipart = jh3Multiparts.get(i);
-			builder.add(MultipartUpload.create(container, "malvag", jh3Multipart.getMultipartId(), null, null));
-		}
-		return builder.build();
-		*/
-
 	}
 
 	@Override
