@@ -9,6 +9,7 @@ similar to Amazon's S3, providing an efficient execution throughout the stack.
 ## Installation
 Detailed instructions on how to install, configure, and get the project running.
 -To install locally:
+
 **Note**: Firstly we need to have H3 and its wrappers installed locally:
 - Instructions of how to install the shared libraries of H3lib, are [here](https://github.com/CARV-ICS-FORTH/H3/tree/master/h3lib) .
 - Instructions of how to install the Java wrapper of H3, are [here](https://github.com/CARV-ICS-FORTH/H3/tree/master/JH3lib) .
