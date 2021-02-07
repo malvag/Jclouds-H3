@@ -27,8 +27,8 @@ import org.jclouds.h3.predicates.validators.H3ContainerNameValidator;
 import org.jclouds.h3.reference.H3Constants;
 import org.jclouds.h3.util.Utils;
 import org.jclouds.io.Payload;
-import org.jclouds.logging.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 
@@ -41,7 +41,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-//import java.util.UUID;
 
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -53,7 +52,7 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 	private static JH3 H3client;
 	private static final boolean debug = true;
 	@Resource
-	protected Logger logger = Logger.NULL;
+	protected static final Logger logger = LoggerFactory.getLogger(H3StorageStrategyImpl.class);
 
 	protected Provider<BlobBuilder> blobBuilders;
 	protected String baseDirectory;
@@ -80,7 +79,6 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				"h3 container name validator");
 
 		this.H3BlobKeyValidator = checkNotNull(h3BlobKeyValidator, "h3 blob key validator");
-
 		this.defaultLocation = defaultLocation;
 		System.out.println("[Jclouds-H3] new H3StorageStrategyImpl with " + baseDir);
 
@@ -268,12 +266,17 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 				}
 				long size_offset = jh3Object.getData().length;
 				long remaining_size = objectInfo.getSize();
-				int counter = 0;
+				int counter = 1;
+				remaining_size -= size_offset;
+				outputStream.write(jh3Object.getData());
 				/**
 				 * Get every chunk of data as long as we get JH3_CONTINUE as Status
 				 */
 				while (H3StorageStrategyImpl.H3client.getStatus() == JH3Status.JH3_CONTINUE) {
+					logger.debug("[Jclouds-H3] Object range: " + size_offset*counter + " " + ((size_offset*counter) + size_offset));
 					JH3Object tmp_obj = null;
+					if(remaining_size == 0) // case: to be removed
+						break;
 					if (size_offset <= remaining_size)
 						tmp_obj = H3StorageStrategyImpl.H3client.readObject(containerName, blobName, size_offset * counter, size_offset);
 					else
@@ -281,8 +284,8 @@ public class H3StorageStrategyImpl implements LocalStorageStrategy {
 					remaining_size -= size_offset;
 					counter += 1;
 					outputStream.write(tmp_obj.getData());
-					jh3Object.setData(outputStream.toByteArray());
 				}
+				jh3Object.setData(outputStream.toByteArray());
 				jh3Object.setSize(objectInfo.getSize());
 				builder.payload(jh3Object.getData())
 						.contentLength(jh3Object.getSize())
