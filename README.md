@@ -1,40 +1,66 @@
+# JClouds-H3 Storage Api Provider
 
-## The jclouds API for accessing H3 as a blobstore.
+Jclouds-H3 is a [Jclouds](https://github.com/apache/jclouds) API provider for [H3](https://github.com/CARV-ICS-FORTH/H3/) object store.
+Provides a minimal but functional storage API for jclouds-compatible technologies(i.e. [s3proxy](https://github.com/gaul/s3proxy)). 
 
+Implemented the Jclouds BlobStore interface, utilizing H3's Java wrapper(JH3),
+similar to Amazon's S3, providing an efficient execution throughout the stack. 
 
-* Have to check on list - filter when deleting a directory of incomplete uploads
+## Installation
+Detailed instructions on how to install, configure, and get the project running.
+-To install locally:
+**Note**: Firstly we need to have H3 and its wrappers installed locally:
+- Instructions of how to install the shared libraries of H3lib, are [here](https://github.com/CARV-ICS-FORTH/H3/tree/master/h3lib) .
+- Instructions of how to install the Java wrapper of H3, are [here](https://github.com/CARV-ICS-FORTH/H3/tree/master/JH3lib) .
 
+**Note**: use JDK 9+ to avoid JH3's class missmatch.
+##### Install Module with:
+``` mvn install -Drat.skip=true -Dcheckstyle.skip=true ```
 
-* Had to manually merge bytes from data packets in getBlob (getting 100MB file was SIGSEGV-ing the JVM) so we get small chunks as long as we get JH3_CONTINUE as Status
+- need to skip RAT::check
+- need to skip checkstyle::check
 
-
-#### S3proxy:1.7.1:
- 
- - It says we should compile it with JDK 7 and their tests can't run in JDK 7.(change_JDK:JDK 8)
- 
- - S3proxy:1.7.1: JRE has to run with JRE 9+ to pass class mismatch with JH3.(change_JRE:JDK 9+)
-
-
-#### Jclouds:2.2.1: 
-
- - It uses animal-sniffer-plugin that can check signatures up to JDK 8 but our JH3 has JDK 9 as a target so we can’t compile them with the animal-sniffer-plugin    active. (maven-plugin: animal-sniffer-plugin:skipped)
- 
- - It is meant to be installed on its own with JDK 7 explicitly.
-
-
-* RSA for the s3proxy’s keystore needed for a self-signed certificate
- Generating 2,048 bit RSA key pair and self-signed certificate (SHA256withRSA) with a validity of 90 days for: CN=Evangelos Maliaroudakis, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=GR
-Pass: CARVICS
-
-### s3proxy.conf
+## Configuration
 ```properties
-s3proxy.secure-endpoint=https://0.0.0.0:8080
-s3proxy.keystore-path=keystore.jks
-s3proxy.keystore-password=CARVICS
-s3proxy.authorization=aws-v2-or-v4
-
-s3proxy.identity=test:tester
-s3proxy.credential=testing
-jclouds.provider=h3
-jclouds.h3.basedir=file:///tmp/demo_h3via_jclouds
+    jclouds.provider=h3
+    jclouds.h3.basedir=file:///tmp/demo_h3via_jclouds
 ```
+
+## Usage test
+
+```java
+// setup where the provider must store the files
+Properties properties = new Properties();
+properties.setProperty(H3Constants.PROPERTY_BASEDIR, "file:///tmp/demo_h3via_jclouds");
+// setup the container name used by the provider (like bucket in S3)
+String containerName = "testbucket";
+
+// get a context with filesystem that offers the portable BlobStore api
+BlobStoreContext context = ContextBuilder.newBuilder("h3")
+                .overrides(properties)
+                .buildView(BlobStoreContext.class);
+
+// create a container in the default location
+BlobStore blobStore = context.getBlobStore();
+blobStore.createContainerInLocation(null, containerName);
+
+// add blob
+BlobBuilder builder = blobStore.blobBuilder("test");
+builder.payload("test data");
+Blob blob = builder.build();
+blobStore.putBlob(containerName, blob);
+
+// retrieve blob
+Blob blobRetrieved = blobStore.getBlob(containerName, "test");
+
+// delete blob
+blobStore.removeBlob(containerName, "test");
+
+//close context
+context.close();
+```
+
+
+## Known issues
+
+- Unstable download when downloading parts with multiple connections per file (>100MB).
