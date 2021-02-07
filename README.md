@@ -36,7 +36,7 @@ properties.setProperty(H3Constants.PROPERTY_BASEDIR, "file:///tmp/demo_h3via_jcl
 // setup the container name used by the provider (like bucket in S3)
 String containerName = "testbucket";
 
-// get a context with filesystem that offers the portable BlobStore api
+// get a context with h3 that offers the portable BlobStore api
 BlobStoreContext context = ContextBuilder.newBuilder("h3")
                 .overrides(properties)
                 .buildView(BlobStoreContext.class);
